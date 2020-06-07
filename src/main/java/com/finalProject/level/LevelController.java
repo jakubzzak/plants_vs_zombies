@@ -12,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
@@ -64,8 +63,10 @@ public class LevelController extends Thread implements Initializable, Controlled
             btn.setText("Level " + (lvl.getID() + 1));
             btn.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                    // TODO: verify chosen level
+                    Main.setCurrentLevel(lvl);
+                    Main.getScreenContainer().loadScreen(Main.gameScreenID, Main.gameScreenSOURCE);
                     myController.setScreen("game");
+                    System.out.println("success, entering game");
                 }
             });
 
@@ -139,8 +140,9 @@ public class LevelController extends Thread implements Initializable, Controlled
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         user = Main.getUser();
+        userInfo.setText("Signed as: " + user.getUsername());
+
         levels = Main.getLevels();
-//        user.setGameController(this);
 
         deleteBtn.setDisable(true);
         helpBtn.setDisable(true);

@@ -15,7 +15,7 @@ import javafx.util.Duration;
 import java.util.HashMap;
 
 
-public class ScreensController  extends StackPane {
+public class ScreensController extends StackPane {
     private HashMap<String, Node> screens = new HashMap<>();
 
     public ScreensController() {
@@ -77,6 +77,7 @@ public class ScreensController  extends StackPane {
                         new KeyFrame(new Duration(1500), new KeyValue(opacity, 1.0)));
                 fadeIn.play();
             }
+
             return true;
         } else {
             System.out.println("screen hasn't been loaded!!! \n");

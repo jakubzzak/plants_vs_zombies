@@ -8,6 +8,8 @@ cover_src: [src]
 zombie_count: [zombie count]
 // bg
 bg_src: [bg image src]
+// lawn mower - [default: true]
+lawn_mower: [true/false]
 
 // plants and zombies used in your lvl
 // { REGULAR, REGULAR_STRONGER, RUNNER }

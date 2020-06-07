@@ -43,15 +43,15 @@ public class WelcomeScreenController implements Initializable, ControlledScreen 
             return;
         }
         user.setUsername(username.getText());
-        myController.setScreen("level");
+        Main.getScreenContainer().loadScreen(Main.lvlScreenID, Main.lvlScreenSOURCE);
+        Main.getScreenContainer().setScreen("level");
         System.out.println("success, entering levels");
+        Main.getScreenContainer().unloadScreen("welcome");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         user = Main.getUser();
-
-//        username.requestFocus();
 
         enterBtn.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
