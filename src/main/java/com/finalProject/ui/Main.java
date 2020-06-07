@@ -7,45 +7,50 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
     public static Stage ps;
     private static User user;
+    private static Level currentLevel;
     private static List<Level> levels;
+    private static ScreensController screenContainer = new ScreensController();
 
-    private static String screen0ID = "welcome";
-    private static String screen0File = "/views/welcomeScreen.fxml";
-    private static String screen1ID = "game";
-    private static String screen1File = "/views/gameScreen.fxml";
-    private static String screen2ID = "level";
-    private static String screen2File = "/views/levelScreen.fxml";
+    public static String welcomeScreenID = "welcome";
+    public static String welcomeScreenSOURCE = "/views/welcomeScreen.fxml";
+    public static String gameScreenID = "game";
+    public static String gameScreenSOURCE = "/views/gameScreen.fxml";
+    public static String lvlScreenID = "level";
+    public static String lvlScreenSOURCE = "/views/levelScreen.fxml";
 //    private static String screen3ID = "help";
 //    private static String screen3File = "/views/helpScreen.fxml";
 
-    private static String lvl1 = "lvl1.txt"; // file -> v nom parametre lvl
-    private static String lvl2 = "lvl2.txt";
-    private static String lvl3 = "lvl3.txt";
 
     @Override
     public void start(Stage primaryStage) {
         user = new User();
-
+        currentLevel = null;
         levels = new ArrayList<>();
-        // TODO: citaj subory, nech sa sem nemusia pripisovat furt
-        levels.add(new Level(0, lvl1));
-        levels.add(new Level(1, lvl2));
-        levels.add(new Level(2, lvl3));
 
-        ScreensController mainContainer = new ScreensController();
-        mainContainer.loadScreen(screen0ID, screen0File);
-        mainContainer.loadScreen(screen1ID, screen1File);
-        mainContainer.loadScreen(screen2ID, screen2File);
-        mainContainer.setScreen(screen0ID);
+        for (String filename : getAllFiles(new File("src/main/resources/levels"))) {
+            try {
+                if (!filename.matches(".*template.txt")) {
+                    levels.add(new Level(levels.size(), filename));
+                }
+            } catch (Exception e) {
+                System.out.println("pruser pri citani levelu " + filename);
+            }
+        }
+
+        screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
+//        mainContainer.loadScreen(gameScreenID, gameScreenSOURCE);
+//        mainContainer.loadScreen(lvlScreenID, lvlScreenSOURCE);
+        screenContainer.setScreen(welcomeScreenID);
 
         Group root = new Group();
-        root.getChildren().addAll(mainContainer);
+        root.getChildren().addAll(screenContainer);
         primaryStage.setTitle("Plants vs. Zombies");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -54,8 +59,24 @@ public class Main extends Application {
     }
 
     public static User getUser() { return user; }
+    public static ScreensController getScreenContainer() { return screenContainer; }
     public static List<Level> getLevels() { return levels; }
     public static Stage getPrimaryStage() { return ps; }
+    public static Level getCurrentLevel() { return currentLevel; }
+
+    public static void setCurrentLevel(Level currentLevel) { Main.currentLevel = currentLevel; }
+
+    private static List<String> getAllFiles(File current) {
+        List<String> temp = new ArrayList<>();
+        File[] directoryListing = current.listFiles();
+        if ( directoryListing != null ) {
+            for (File child : directoryListing) {
+                if ( child.isDirectory() ) temp.addAll(getAllFiles(child));
+                else temp.add(child.getPath());
+            }
+        }
+        return temp;
+    }
 
 
     public static void main(String[] args) {

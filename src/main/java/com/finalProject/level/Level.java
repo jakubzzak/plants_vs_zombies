@@ -18,6 +18,7 @@ public class Level {
     private String coverSrc = "";
     private String bgSrc = "";
     private int zombieCount = 100;
+    private boolean lawnMower = true;
     private List<ZombieType> zombies = new ArrayList<>();
     private List<PlantType> plants = new ArrayList<>();
 
@@ -29,6 +30,7 @@ public class Level {
     private void setCoverSrc(String src) { coverSrc = src; }
     private void setBgSrc(String src) { bgSrc = src; }
     private void setZombieCount(int count) { zombieCount = count; }
+    private void setLawnMower(boolean isPresent) { lawnMower = isPresent; }
     private void addPlant(String type) throws WrongPlantTypeException { plants.add(PlantType.getTypeImport(type)); }
     private void addZombie(String type) throws WrongZombieTypeException { zombies.add(ZombieType.getTypeImport(type)); }
 
@@ -37,7 +39,7 @@ public class Level {
     public Image getBgImg() { return new Image( "/pics/bg/" + coverSrc); }
 
     private void loadLevel(String filename) {
-        try(Scanner sc = new Scanner(new InputStreamReader(new FileInputStream( "src/main/resources/levels/" + filename), StandardCharsets.UTF_8))) {
+        try(Scanner sc = new Scanner(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().strip().split(":?\\s+");
                 if (line.length > 1 && !line[0].equals("//")) {
@@ -50,6 +52,9 @@ public class Level {
                             break;
                         case "zombie_count":
                             setZombieCount(Integer.parseInt(line[1]));
+                            break;
+                        case "lawn_mower":
+                            setLawnMower(line[1].equals("true"));
                             break;
                         case "plants":
                             for (int i=1; i < line.length; i++) {
@@ -76,4 +81,16 @@ public class Level {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Level{" +
+                "ID=" + ID +
+//                ", coverSrc='" + coverSrc + '\'' +
+                ", bgSrc='" + bgSrc + '\'' +
+                ", zombieCount=" + zombieCount +
+                ", lawnMower=" + lawnMower +
+                ", zombies=" + zombies +
+                ", plants=" + plants +
+                '}';
+    }
 }
