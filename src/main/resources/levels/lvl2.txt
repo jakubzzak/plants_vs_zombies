@@ -1,0 +1,5 @@
+cover_src: lvl2_cover.png
+bg_src: garden2.png
+zombie_count: 50
+plants: FLOWER CANNON BARRIER
+zombies: REGULAR

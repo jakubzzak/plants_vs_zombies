@@ -1,0 +1,5 @@
+cover_src: lvl3_cover.png
+bg_src: garden2.png
+zombie_count: 10
+plants: CANNON FLOWER FROZEN_CANNON BARRIER_APRON
+zombies: RUNNER

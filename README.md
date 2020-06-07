@@ -7,3 +7,6 @@
 **using**
 - javafx
 - maven
+
+**author notes**
+- when defining path look at target!! 
