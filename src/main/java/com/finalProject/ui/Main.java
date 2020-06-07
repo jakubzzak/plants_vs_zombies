@@ -44,9 +44,8 @@ public class Main extends Application {
             }
         }
 
+        // always first load a new screen and set it as active afterwards
         screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
-//        mainContainer.loadScreen(gameScreenID, gameScreenSOURCE);
-//        mainContainer.loadScreen(lvlScreenID, lvlScreenSOURCE);
         screenContainer.setScreen(welcomeScreenID);
 
         Group root = new Group();
