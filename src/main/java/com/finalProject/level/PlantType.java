@@ -23,6 +23,39 @@ public enum PlantType {
     MINE,
     ;
 
+    public static int getCost(PlantType type) throws WrongPlantTypeException {
+        switch (type) {
+            case CANNON:
+                return 50;
+            case DOUBLE_CANNON:
+                return 100;
+            case FROZEN_CANNON:
+                return 125;
+            case DOUBLE_FROZEN_CANNON:
+                return 175;
+            case BARRIER:
+            case BARRIER_APRON:
+            case BARRIER_NURSE:
+                return 50;
+            case LARGE_BARRIER:
+                return 100;
+            case FLOWER:
+                return 25;
+            case DOUBLE_FLOWER:
+                return 75;
+            case CORN:
+                return 100;
+            case EATER:
+                return 150;
+            case CACTUS:
+                return 100;
+            case MINE:
+                return 25;
+            default:
+                throw new WrongPlantTypeException("No such plant with id " + type);
+        }
+    }
+
     public static PlantType getTypeImport(String type) throws WrongPlantTypeException {
         switch (type) {
             case "CANNON":

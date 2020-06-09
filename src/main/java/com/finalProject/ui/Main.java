@@ -17,6 +17,9 @@ public class Main extends Application {
     private static Level currentLevel;
     private static List<Level> levels;
     private static ScreensController screenContainer = new ScreensController();
+    public static double HEIGHT = 489;
+    public static double WIDTH = 360;
+    public static Scene sc;
 
     public static String welcomeScreenID = "welcome";
     public static String welcomeScreenSOURCE = "/views/welcomeScreen.fxml";
@@ -44,14 +47,25 @@ public class Main extends Application {
             }
         }
 
-        // always first load a new screen and set it as active afterwards
-        screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
-        screenContainer.setScreen(welcomeScreenID);
 
         Group root = new Group();
         root.getChildren().addAll(screenContainer);
         primaryStage.setTitle("Plants vs. Zombies");
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(true);
+        sc = new Scene(root);
+
+        sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
+            WIDTH = (double) newSceneWidth;
+        });
+        sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
+            HEIGHT = (double) newSceneHeight;
+        });
+        primaryStage.setScene(sc);
+
+        // always first load a new screen and set it as active afterwards
+        screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
+        screenContainer.setScreen(welcomeScreenID);
+
         primaryStage.show();
 
         ps = primaryStage;
@@ -62,8 +76,12 @@ public class Main extends Application {
     public static List<Level> getLevels() { return levels; }
     public static Stage getPrimaryStage() { return ps; }
     public static Level getCurrentLevel() { return currentLevel; }
+    public static double getHeight() { return HEIGHT; }
+    public static double getWidth() { return WIDTH; }
 
     public static void setCurrentLevel(Level currentLevel) { Main.currentLevel = currentLevel; }
+    public static void setHeight(double newSize) { HEIGHT = newSize; }
+    public static void setWidth(double newSize) { WIDTH = newSize; }
 
     private static List<String> getAllFiles(File current) {
         List<String> temp = new ArrayList<>();

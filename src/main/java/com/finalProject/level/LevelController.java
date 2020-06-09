@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -47,6 +48,9 @@ public class LevelController extends Thread implements Initializable, Controlled
     @FXML
     private HBox content;
 
+    @FXML
+    private VBox screen;
+
     private void fillContent() {
         content.setSpacing(20);
         for (Level lvl : levels) {
@@ -59,8 +63,8 @@ public class LevelController extends Thread implements Initializable, Controlled
 //            view.setFitWidth(300);
             view.setFitHeight(200);
             // btn
-            Button btn = new Button();
-            btn.setText("Level " + (lvl.getID() + 1));
+            Button btn = new Button("Level " + (lvl.getID() + 1));
+            btn.setCursor(Cursor.HAND);
             btn.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     Main.setCurrentLevel(lvl);
@@ -148,6 +152,18 @@ public class LevelController extends Thread implements Initializable, Controlled
         helpBtn.setDisable(true);
 
         fillContent();
+
+        screen.setPrefWidth(Main.sc.getWidth());
+        content.setPrefWidth(Main.sc.getWidth());
+        screen.setPrefHeight(Main.sc.getHeight());
+
+        Main.sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
+            screen.setPrefWidth((double)newSceneWidth);
+            content.setPrefWidth((double)newSceneWidth);
+        });
+        Main.sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
+            screen.setPrefHeight((double)newSceneHeight);
+        });
 
 //        userInfo.setText("Signed as: " + user.getUsername());
 
