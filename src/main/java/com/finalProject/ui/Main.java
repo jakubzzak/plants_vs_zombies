@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
-    public static Stage ps;
+    public static Stage ps; // window size -> global access
+    public static Scene sc; // showing components -> global access
     private static User user;
     private static Level currentLevel;
     private static List<Level> levels;
     private static ScreensController screenContainer = new ScreensController();
-    public static double HEIGHT = 489;
-    public static double WIDTH = 360;
-    public static Scene sc;
+    public static double INIT_HEIGHT = 489; // TODO: move to config
+    public static double INIT_WIDTH = 360;
 
     public static String welcomeScreenID = "welcome";
     public static String welcomeScreenSOURCE = "/views/welcomeScreen.fxml";
@@ -55,10 +55,10 @@ public class Main extends Application {
         sc = new Scene(root);
 
         sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
-            WIDTH = (double) newSceneWidth;
+            INIT_WIDTH = (double) newSceneWidth;
         });
         sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
-            HEIGHT = (double) newSceneHeight;
+            INIT_HEIGHT = (double) newSceneHeight;
         });
         primaryStage.setScene(sc);
 
@@ -76,12 +76,12 @@ public class Main extends Application {
     public static List<Level> getLevels() { return levels; }
     public static Stage getPrimaryStage() { return ps; }
     public static Level getCurrentLevel() { return currentLevel; }
-    public static double getHeight() { return HEIGHT; }
-    public static double getWidth() { return WIDTH; }
+    public double getHeight() { return INIT_HEIGHT; }
+    public double getWidth() { return INIT_WIDTH; }
 
     public static void setCurrentLevel(Level currentLevel) { Main.currentLevel = currentLevel; }
-    public static void setHeight(double newSize) { HEIGHT = newSize; }
-    public static void setWidth(double newSize) { WIDTH = newSize; }
+    public void setHeight(double newSize) { INIT_HEIGHT = newSize; }
+    public void setWidth(double newSize) { INIT_WIDTH = newSize; }
 
     private static List<String> getAllFiles(File current) {
         List<String> temp = new ArrayList<>();

@@ -2,7 +2,9 @@ package com.finalProject.game;
 
 import com.finalProject.level.PlantType;
 
-public class Plant {
+import java.io.Serializable;
+
+public class Plant implements Serializable {
     private final PlantType type;
     private final int cost;
 
