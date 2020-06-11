@@ -2,15 +2,14 @@ package com.finalProject.level;
 
 import com.finalProject.exceptions.WrongPlantTypeException;
 import com.finalProject.exceptions.WrongZombieTypeException;
+import com.finalProject.game.Plant;
 import javafx.scene.image.Image;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Level {
@@ -37,6 +36,16 @@ public class Level {
     public int getID() { return ID; }
     public Image getCoverImg() { return new Image( "/pics/lvl_covers/" + coverSrc); }
     public Image getBgImg() { return new Image( "/pics/bg/" + coverSrc); }
+    public String getBgImgSrc() { return "/pics/bg/" + bgSrc; }
+    public boolean hasLawnMower() { return lawnMower; }
+    public List<Plant> getPlants() { return plants.stream().map(x -> {
+        try {
+            return new Plant(x, PlantType.getCost(x));
+        } catch (WrongPlantTypeException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }).collect(Collectors.toList()); }
 
     private void loadLevel(String filename) {
         try(Scanner sc = new Scanner(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {

@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
-    public static Stage ps;
+    public static Stage ps; // window size -> global access
+    public static Scene sc; // showing components -> global access
     private static User user;
     private static Level currentLevel;
     private static List<Level> levels;
     private static ScreensController screenContainer = new ScreensController();
+    public static double INIT_HEIGHT = 489; // TODO: move to config
+    public static double INIT_WIDTH = 360;
 
     public static String welcomeScreenID = "welcome";
     public static String welcomeScreenSOURCE = "/views/welcomeScreen.fxml";
@@ -44,14 +47,25 @@ public class Main extends Application {
             }
         }
 
-        // always first load a new screen and set it as active afterwards
-        screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
-        screenContainer.setScreen(welcomeScreenID);
 
         Group root = new Group();
         root.getChildren().addAll(screenContainer);
         primaryStage.setTitle("Plants vs. Zombies");
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(true);
+        sc = new Scene(root);
+
+        sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
+            INIT_WIDTH = (double) newSceneWidth;
+        });
+        sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
+            INIT_HEIGHT = (double) newSceneHeight;
+        });
+        primaryStage.setScene(sc);
+
+        // always first load a new screen and set it as active afterwards
+        screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
+        screenContainer.setScreen(welcomeScreenID);
+
         primaryStage.show();
 
         ps = primaryStage;
@@ -62,8 +76,12 @@ public class Main extends Application {
     public static List<Level> getLevels() { return levels; }
     public static Stage getPrimaryStage() { return ps; }
     public static Level getCurrentLevel() { return currentLevel; }
+    public double getHeight() { return INIT_HEIGHT; }
+    public double getWidth() { return INIT_WIDTH; }
 
     public static void setCurrentLevel(Level currentLevel) { Main.currentLevel = currentLevel; }
+    public void setHeight(double newSize) { INIT_HEIGHT = newSize; }
+    public void setWidth(double newSize) { INIT_WIDTH = newSize; }
 
     private static List<String> getAllFiles(File current) {
         List<String> temp = new ArrayList<>();

@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,6 +21,8 @@ public class WelcomeScreenController implements Initializable, ControlledScreen 
     ScreensController myController;
     User user;
 
+    @FXML
+    private VBox screen;
     @FXML
     Label usernameLabel;
     @FXML
@@ -62,6 +65,13 @@ public class WelcomeScreenController implements Initializable, ControlledScreen 
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 enter(new ActionEvent());
             }
+        });
+
+        Main.sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
+            screen.setPrefWidth((double)newSceneWidth);
+        });
+        Main.sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
+            screen.setPrefHeight((double)newSceneHeight);
         });
     }
 

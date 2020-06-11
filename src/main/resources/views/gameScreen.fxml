@@ -10,9 +10,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="399.0" prefWidth="448.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.finalProject.game.GameController">
+
+<VBox fx:id="screen" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="399.0" prefWidth="448.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.finalProject.game.GameController">
     <children>
-        <MenuBar VBox.vgrow="ALWAYS">
+        <MenuBar maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
             <menus>
                 <Menu fx:id="fileBtnLabel" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="File">
                     <items>
@@ -46,24 +47,39 @@
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F1" control="ANY" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
-               <items>
-                  <MenuItem fx:id="closeBtn1" mnemonicParsing="false" onAction="#close" style="-fx-font-family: Arial Hebrew Bold;" text="Close">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="ESCAPE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-               </items>
             </Menu>
             </menus>
         </MenuBar>
-        <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="200.0" prefViewportHeight="172.0" prefViewportWidth="394.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
-            <content>
-                <VBox fx:id="content" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: #333333;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
-                    <padding>
-                        <Insets bottom="10.0" top="10.0" />
-                    </padding></VBox>
-            </content>
-        </ScrollPane>
-        <HBox prefHeight="0.0" prefWidth="479.0" />
+      <SplitPane dividerPositions="0.2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+        <items>
+          <AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="75.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <HBox fx:id="toolbarArea" alignment="CENTER_LEFT" fillHeight="false" layoutX="131.0" layoutY="-33.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <VBox fx:id="walletArea" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="75.0" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                        <ScrollPane fitToHeight="true" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                          <content>
+                              <HBox fx:id="cardsArea" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="75.0" prefWidth="0.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0">
+               <children>
+                  <HBox fx:id="gameArea" layoutX="102.0" layoutY="128.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
     </children>
 </VBox>
