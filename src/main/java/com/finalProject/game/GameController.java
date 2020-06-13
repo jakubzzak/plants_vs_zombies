@@ -94,13 +94,14 @@ public class GameController extends Thread implements Initializable, ControlledS
                 int finalRow = row;
                 int finalCol = col;
                 cell.setOnDragDropped(dragEvent -> {
-                    Main.sc.setCursor(Cursor.DEFAULT);
+//                    Main.sc.setCursor(Cursor.DEFAULT);
+                    dragEvent.acceptTransferModes(TransferMode.ANY);
                     try {
                         Plant plant = (Plant) dragEvent.getDragboard().getContent(DataFormat.lookupMimeType("plant"));
                         plant.setCellPos(finalRow, finalCol);
-                        System.out.println("plant droped at " + cell.getId() + ": " + plant);
                         int newAmount = Integer.parseInt(amount.getText()) - plant.getCost();
                         if (cell.getChildren().isEmpty() && newAmount >= 0) {
+                            System.out.println("plant dropped at " + cell.getId() + ": " + plant);
                             ImageView view = new ImageView();
                             view.setImage(new Image(plant.getImageSrc(), CellSize.getCharacterHeight(size) * 0.7, CellSize.getCharacterHeight(size) * 0.9, true, true));
                             cell.getChildren().add(view);
@@ -110,6 +111,11 @@ public class GameController extends Thread implements Initializable, ControlledS
                     } catch (Exception e) {
                         System.out.println("problem when dropping plant -> " + e.getMessage());
                     }
+                    dragEvent.consume();
+                });
+                cell.setOnDragOver(dragEvent -> {
+                    dragEvent.acceptTransferModes(TransferMode.ANY);
+                    dragEvent.consume();
                 });
 
                 grid.add(cell, col, row);
@@ -154,7 +160,7 @@ public class GameController extends Thread implements Initializable, ControlledS
             Label cost = new Label(plant.getCost() + "");
             col.setCursor(Cursor.OPEN_HAND);
             col.setOnDragDetected(event -> {
-                Main.sc.setCursor(Cursor.CLOSED_HAND);
+//                Main.sc.setCursor(Cursor.CLOSED_HAND);
                 Dragboard db = col.startDragAndDrop(TransferMode.ANY);
 
                 ClipboardContent content = new ClipboardContent();
@@ -172,10 +178,24 @@ public class GameController extends Thread implements Initializable, ControlledS
                     } else {
                         content.put(new DataFormat("plant"), plant);
                     }
+                    System.out.println("dragging detected");
                 }
                 db.setContent(content);
 
                 event.consume();
+            });
+            col.setOnDragEntered(dragEvent -> {
+                Main.sc.setCursor(Cursor.CLOSED_HAND);
+                System.out.println("drag entered");
+                dragEvent.consume();
+            });
+//            col.setOnDragExited(dragEvent -> {
+//                Main.sc.setCursor(Cursor.CLOSED_HAND);
+//                System.out.println("drag exited");
+//            });
+            col.setOnDragDone(dragEvent -> {
+                Main.sc.setCursor(Cursor.DEFAULT);
+                System.out.println("drag done");
             });
 
             col.setAlignment(Pos.CENTER);
