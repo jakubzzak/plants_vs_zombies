@@ -2,15 +2,15 @@ package com.finalProject.game;
 
 import com.finalProject.exceptions.WrongWindowSizeException;
 
-public enum WindowSize {
+public enum CellSize {
     SMALL,
     MID,
     LARGE;
 
-    public static int getCharacterHeight(WindowSize size) throws WrongWindowSizeException {
+    public static int getCharacterHeight(CellSize size) throws WrongWindowSizeException {
         switch (size) {
             case SMALL:
-                return 35;
+                return 48;
             case MID:
                 return 75;
             case LARGE:
