@@ -2,11 +2,11 @@ package com.finalProject.game;
 
 public enum PowerType {
     REGULAR_BULLET,
+    DOUBLE_BULLET,
     FROZEN_BULLET,
     BUTTER_BULLET,
     EAT,
     BARRIER,
     EXPLODE,
-
-    // TODO: special power of a plant
+    SUN_PRODUCING;
 }

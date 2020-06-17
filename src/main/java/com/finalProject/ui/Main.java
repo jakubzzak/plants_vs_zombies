@@ -10,14 +10,16 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Main extends Application {
     public static Stage ps; // window size -> global access
     public static Scene sc; // showing components -> global access
     private static User user;
+    private static Properties props;
     private static Level currentLevel;
     private static List<Level> levels;
-    private static ScreensController screenContainer = new ScreensController();
+    private static final ScreensController screenContainer = new ScreensController();
     public static double INIT_HEIGHT = 489; // TODO: move to config
     public static double INIT_WIDTH = 360;
 
@@ -35,18 +37,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         user = new User();
         currentLevel = null;
-        levels = new ArrayList<>();
-
-        for (String filename : getAllFiles(new File("src/main/resources/levels"))) {
-            try {
-                if (!filename.matches(".*template.txt")) {
-                    levels.add(new Level(levels.size(), filename));
-                }
-            } catch (Exception e) {
-                System.out.println("pruser pri citani levelu " + filename);
-            }
-        }
-
 
         Group root = new Group();
         root.getChildren().addAll(screenContainer);
@@ -67,8 +57,28 @@ public class Main extends Application {
         screenContainer.setScreen(welcomeScreenID);
 
         primaryStage.show();
-
         ps = primaryStage;
+
+        loadLevels();
+        loadProps();
+    }
+
+    private static void loadProps() {
+        props = new Properties(); // TODO: check it out
+    }
+
+    private static void loadLevels() {
+        levels = new ArrayList<>();
+
+        for (String filename : getAllFiles(new File("src/main/resources/levels"))) {
+            try {
+                if (!filename.matches(".*template.txt")) {
+                    levels.add(new Level(levels.size(), filename));
+                }
+            } catch (Exception e) {
+                System.out.println("pruser pri citani levelu " + filename);
+            }
+        }
     }
 
     public static User getUser() { return user; }
@@ -78,6 +88,7 @@ public class Main extends Application {
     public static Level getCurrentLevel() { return currentLevel; }
     public double getHeight() { return INIT_HEIGHT; }
     public double getWidth() { return INIT_WIDTH; }
+    public Properties getAppProps() { return props; }
 
     public static void setCurrentLevel(Level currentLevel) { Main.currentLevel = currentLevel; }
     public void setHeight(double newSize) { INIT_HEIGHT = newSize; }

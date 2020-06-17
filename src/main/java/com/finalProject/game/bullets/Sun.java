@@ -7,16 +7,16 @@ import com.finalProject.level.PlantType;
 
 import java.io.Serializable;
 
-public class Regular implements Hit, Serializable {
-    private final PowerType POWER = PowerType.REGULAR_BULLET;
+public class Sun implements Hit, Serializable {
+    private final PowerType POWER = PowerType.SUN_PRODUCING;
 
-    private final Plant parent;
-    private final int current_x, current_y;
+    private Plant parent;
+    private int current_x, current_y;
     private final int end_x, end_y;
     private final int DAMAGE;
-    private String imgSrc = "/pics/regular_shot.png";
+    private String imgSrc = "/pics/regular_sun.png";
 
-    public Regular(Plant parent, int startCellX, int startCellY, int endCellX, int endCellY) throws WrongPlantTypeException {
+    public Sun(Plant parent, int startCellX, int startCellY, int endCellX, int endCellY) throws WrongPlantTypeException {
         this.parent = parent;
         this.current_x = startCellX;
         this.current_y = startCellY;
@@ -47,28 +47,32 @@ public class Regular implements Hit, Serializable {
 
     @Override
     public double getSpeed() {
-        return 0.5;
+        return 0.2;
     }
 
     @Override
     public int getMaxPicSize() {
-        return 15;
+        return 50;
     }
 
     @Override
     public int getOffsetY() {
-        return 5;
+        return 0;
     }
 
     @Override
     public int getOffsetX() {
-        return 5;
+        return 0;
     }
 
     @Override
     public void run() {
         parent.getController().releaseHit(this);
-        // TODO: create bullet pic
+//        new Timeline(new KeyFrame(Duration.millis(10), e -> {
+//            ImageView bullet = new ImageView(new Image(imgSrc, 50, 50, true, true));
+//            parent.getController().releaseHit(bullet);
+//        })).setCycleCount(Animation.INDEFINITE);
+//        // TODO: create bullet pic
 //        while (current_x != end_x) {
 //            // TODO: move bullet to the right
 //        }

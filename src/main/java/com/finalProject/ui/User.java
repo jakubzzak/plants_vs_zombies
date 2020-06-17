@@ -9,7 +9,7 @@ public class User extends Thread {
     private int UID;
     private String username;
     private GameController gameController;
-    private int wallet = 50;
+    private int wallet = 1000;
 
 
     public User() {
