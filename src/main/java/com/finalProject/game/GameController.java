@@ -1,11 +1,15 @@
 package com.finalProject.game;
 
 import com.finalProject.exceptions.WrongWindowSizeException;
+import com.finalProject.game.bullets.Hit;
 import com.finalProject.level.Level;
+import com.finalProject.level.PlantType;
 import com.finalProject.ui.User;
 import com.finalProject.ui.Main;
 import com.finalProject.screenHandler.ControlledScreen;
 import com.finalProject.screenHandler.ScreensController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -41,7 +46,11 @@ public class GameController extends Thread implements Initializable, ControlledS
     private VBox content;
 
     @FXML
-    private HBox gameArea;
+    private StackPane gameArea;
+    @FXML
+    private Pane hitLayer;
+    @FXML
+    private GridPane fieldLayer;
     @FXML
     private HBox toolbarArea;
     @FXML
@@ -67,22 +76,68 @@ public class GameController extends Thread implements Initializable, ControlledS
     @FXML
     private MenuItem helpBtn;
 
+    public void releaseZombie(Zombie zombie) {
+        // TODO: visualize zombie
+        System.out.println("zombie released: " + zombie);
+    }
+
+    public void removePlant(Plant plant) {
+        System.out.println(gameArea.getChildren());
+    }
+
+    public void releaseHit(Hit hit) {
+        //TODO: Stack pane
+        ImageView bullet = new ImageView(new Image(hit.getImageSrc(), hit.getMaxPicSize(), hit.getMaxPicSize(), true, true));
+//        System.out.println(hit.getParent().getCol() + ":" + hit.getParent().getRow());
+        bullet.setX(65 + hit.getOffsetX() + hit.getParent().getCol() * 18);
+        bullet.setY(15 + hit.getOffsetY() + hit.getParent().getRow() * 22);
+        bullet.setTranslateX(bullet.getX());
+        bullet.setTranslateY(bullet.getY());
+        Timeline t = new Timeline(new KeyFrame(Duration.millis(25), e -> {
+//            System.out.println("updatujem poziciu -> " + bullet.getX() + ":" + bullet.getY());
+            bullet.setX(bullet.getX() + hit.getSpeed());
+//            bullet.setY(bullet.getY() + 0.2);
+            bullet.setTranslateX(bullet.getX());
+            bullet.setTranslateY(bullet.getY());
+        }));
+        t.setCycleCount(200);
+        t.setOnFinished(event -> {
+            hitLayer.getChildren().remove(bullet);
+        });
+        if (PlantType.ifFlower(hit.getParent())) {
+            bullet.setOnMouseReleased(click -> {
+                try {
+                    amount.setText(Integer.parseInt(amount.getText()) + PlantType.getDamagePerHit(hit.getParent().getType()) + "");
+                    t.stop();
+                    hitLayer.getChildren().remove(bullet);
+                } catch (Exception e) {
+                    System.out.println("can't pick up the sun");
+                }
+            });
+        }
+        try { Thread.sleep(3000); } catch (InterruptedException ie) { System.out.println("sleeping interrupted at creating hit"); }
+        Platform.runLater(() -> hitLayer.getChildren().add(bullet));
+        t.play();
+    }
+
     private void loadLevel() {
         System.out.println("loading level: " + current.toString());
         gameArea.setStyle("-fx-background-image: url('" + current.getBgImgSrc() + "'); -fx-background-size: cover");
-
         try{
             loadCards();
             loadLawnMowers();
             createGameGrid();
-            // TODO: start game
+            current.start();
         } catch (Exception e) {
             System.out.println("pruser pri handlovani hry -> " + e.getMessage());
         }
     }
 
     private void createGameGrid() throws WrongWindowSizeException {
-        GridPane grid = new GridPane();
+        fieldLayer = new GridPane();
+        fieldLayer.setGridLinesVisible(true);
+        hitLayer = new Pane();
+        hitLayer.setStyle("-fx-border-color: red;");
 
         for (int row=0; row<5; row++) {
             for (int col=0; col<9; col++) {
@@ -94,11 +149,12 @@ public class GameController extends Thread implements Initializable, ControlledS
                 int finalRow = row;
                 int finalCol = col;
                 cell.setOnDragDropped(dragEvent -> {
-//                    Main.sc.setCursor(Cursor.DEFAULT);
+                    Main.sc.setCursor(Cursor.DEFAULT);
                     dragEvent.acceptTransferModes(TransferMode.ANY);
                     try {
                         Plant plant = (Plant) dragEvent.getDragboard().getContent(DataFormat.lookupMimeType("plant"));
                         plant.setCellPos(finalRow, finalCol);
+                        plant.setController(this);
                         int newAmount = Integer.parseInt(amount.getText()) - plant.getCost();
                         if (cell.getChildren().isEmpty() && newAmount >= 0) {
                             System.out.println("plant dropped at " + cell.getId() + ": " + plant);
@@ -114,16 +170,18 @@ public class GameController extends Thread implements Initializable, ControlledS
                     dragEvent.consume();
                 });
                 cell.setOnDragOver(dragEvent -> {
+//                    Main.sc.setCursor(Cursor.CLOSED_HAND);
+//                    cell.setCursor(Cursor.CLOSED_HAND);
                     dragEvent.acceptTransferModes(TransferMode.ANY);
                     dragEvent.consume();
                 });
 
-                grid.add(cell, col, row);
+                fieldLayer.add(cell, col, row);
             }
         }
 
-        grid.setPadding(new Insets(33, 10, 8, 110));
-        gameArea.getChildren().add(grid);
+        fieldLayer.setPadding(new Insets(33, 10, 8, 110));
+        gameArea.getChildren().addAll(fieldLayer, hitLayer);
     }
 
     private void loadLawnMowers() {
@@ -146,7 +204,7 @@ public class GameController extends Thread implements Initializable, ControlledS
 
         walletArea.getChildren().addAll(walletView, amount);
         // all plants
-        for (Plant plant : current.getPlants()) {
+        for (Plant plant : current.getPlantTypes()) {
             VBox col = new VBox();
             col.setStyle("-fx-background-color: lightgreen; -fx-background-radius: 5; -fx-padding: 1; -fx-border-width: 1; -fx-border-radius: 5; -fx-border-color: saddlebrown");
             col.setMinWidth(50);
@@ -178,7 +236,8 @@ public class GameController extends Thread implements Initializable, ControlledS
                     } else {
                         content.put(new DataFormat("plant"), plant);
                     }
-                    System.out.println("dragging detected");
+                    gameArea.getChildren().remove(fieldLayer);
+                    gameArea.getChildren().add(fieldLayer);
                 }
                 db.setContent(content);
 
@@ -196,6 +255,8 @@ public class GameController extends Thread implements Initializable, ControlledS
             col.setOnDragDone(dragEvent -> {
                 Main.sc.setCursor(Cursor.DEFAULT);
                 System.out.println("drag done");
+                gameArea.getChildren().remove(hitLayer);
+                gameArea.getChildren().add(hitLayer);
             });
 
             col.setAlignment(Pos.CENTER);
@@ -217,6 +278,7 @@ public class GameController extends Thread implements Initializable, ControlledS
         userInfo.setText("Signed as: " + user.getUsername());
 
         current = Main.getCurrentLevel(); // pointless but nice :)
+        current.setController(this);
 
         user.setGameController(this);
 
