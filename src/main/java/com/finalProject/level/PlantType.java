@@ -84,7 +84,7 @@ public enum PlantType {
             case CORN:
             case DOUBLE_CANNON:
             case FROZEN_CANNON:
-                return 3;
+                return 4;
             case BARRIER:
             case BARRIER_APRON:
             case BARRIER_NURSE:
@@ -93,7 +93,7 @@ public enum PlantType {
                 return -1;
             case FLOWER:
             case DOUBLE_FLOWER:
-                return 1;
+                return 10;
             case EATER:
                 return 12;
             case CACTUS:

@@ -1,5 +1,5 @@
 cover_src: lvl1_cover.png
 bg_src: garden2.png
-zombie_count: 10
+zombie_count: 1
 plants: FLOWER CANNON
 zombies: REGULAR

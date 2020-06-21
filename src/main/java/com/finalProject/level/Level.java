@@ -5,10 +5,9 @@ import com.finalProject.exceptions.WrongZombieTypeException;
 import com.finalProject.game.GameController;
 import com.finalProject.game.Plant;
 import com.finalProject.game.Zombie;
-import javafx.animation.KeyFrame;
+import com.finalProject.game.bullets.Hit;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
-import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -26,9 +25,11 @@ public class Level extends Thread {
     private boolean lawnMower = true;
     private List<ZombieType> zombieTypes = new ArrayList<>();
     private List<PlantType> plantTypes = new ArrayList<>();
+    private Timeline t;
 
-    private List<Zombie> zombies = new LinkedList<>();
-    private List<Plant> plants = new LinkedList<>();
+    private final List<Zombie> zombies = new LinkedList<>();
+    private final List<Plant> plants = new LinkedList<>();
+    private final List<Hit> hits = new ArrayList<>();
 
     public Level(int id, java.lang.String filename) {
         ID = id;
@@ -58,6 +59,7 @@ public class Level extends Thread {
     }).collect(Collectors.toList()); }
 
     public int getZombieCount() { return zombieCount; }
+    synchronized public void addHit(Hit hit) { hits.add(hit); }
 
     private void loadLevel(java.lang.String filename) {
         try(Scanner sc = new Scanner(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
@@ -102,50 +104,95 @@ public class Level extends Thread {
         }
     }
 
-    @Override
-    public void run() {
-        Random rnd = new Random();
-        try { sleep(5000); } catch (Exception e) { System.out.println("game loop interrupted"); }
-
-        new Thread(() -> { // releases zombies
-            while (zombieCount > 0) {
-                System.out.println("releasing new zombie");
-                controller.releaseZombie(new Zombie(zombieTypes.get(rnd.nextInt(zombieTypes.size())), rnd.nextInt(5)));
-                zombieCount--;
-                try { sleep(rnd.nextInt(15) * 1000); } catch (Exception e) { System.out.println("zombie releasing thread interrupted"); }
-            }
-        }).start();
-
-        new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            System.out.println("removing OutDated");
-            plants.forEach(plant -> {
-                if(plant.getHP() <= 0) {
-                    plant.setFiring(false);
-                    plants.remove(plant);
-                    controller.removePlant(plant);
-                }
-            });
-            zombies.forEach(zombie -> {
-
-            });
-        }));
-//        removeStopped.setCycleCount(2);
-//        removeStopped.setAutoReverse(true);
-//        removeStopped.getKeyFrames().add(new KeyFrame(Duration.millis(rnd.nextInt(5) * 1000),
-//                new KeyValue(node.translateXProperty(), 25)));
-//        removeStopped.play();
+    private void endOfGame() {
+        t.stop();
     }
 
     @Override
-    public java.lang.String toString() {
+    public void run() {
+        Random rnd = new Random();
+
+        new Thread(() -> { // handle hits
+            while (zombieCount > 0 || zombies.size() > 0) {
+                synchronized (hits) {
+//                    List<Hit> toBeRemoved = new ArrayList<>();
+                    hits.forEach(hit -> {
+                        if (hit.isDead()) {
+                            System.out.println("removing hit -> " + hit);
+//                            toBeRemoved.add(hit);
+                            controller.removeObjectFromHitLayer(hit.getImg());
+                        } else {
+                            hit.moveForward();
+                        }
+                    });
+//                    toBeRemoved.forEach(hits::remove);
+                }
+                try { sleep(100); } catch (Exception e) { System.out.println("hit handling thread interrupted"); }
+            }
+        }).start();
+
+        new Thread(() -> { // handle plants
+            // TODO: spustat/vypinat fire pri kazdej rastline
+            while (zombieCount > 0 || zombies.size() > 0) {
+//                System.out.println("removing zombie");
+                synchronized (plants) {
+                    List<Plant> toBeRemoved = new ArrayList<>();
+                    plants.forEach(plant -> {
+                        if (plant.isDead()) {
+                            System.out.println("removing plant -> " + plant);
+                            plant.setFiring(false);
+                            toBeRemoved.add(plant);
+                            controller.removeObjectFromPlantLayer(plant.getImg());
+                        }
+                    });
+                    toBeRemoved.forEach(plants::remove);
+                }
+                try { sleep(250); } catch (Exception e) { System.out.println("plant handling thread interrupted"); }
+            }
+        }).start();
+
+        new Thread(() -> { // releases zombies
+            try { sleep(5000); } catch (Exception e) { System.out.println("game loop interrupted"); }
+            while (zombieCount > 0) {
+//                System.out.println("releasing new zombie");
+                synchronized (zombies){
+                    Zombie zombie = new Zombie(zombieTypes.get(rnd.nextInt(zombieTypes.size())), rnd.nextInt(5), 220);
+                    controller.releaseZombie(zombie);
+                    zombies.add(zombie);
+                }
+                zombieCount--;
+                try { sleep(rnd.nextInt(15000)); } catch (Exception e) { System.out.println("zombie releasing thread interrupted"); }
+            }
+        }).start();
+
+        new Thread(() -> { // handle zombies
+            while (zombieCount > 0 || zombies.size() > 0) {
+                synchronized (zombies) {
+                    List<Zombie> toBeRemoved = new ArrayList<>();
+                    zombies.forEach(zombie -> {
+                        if (zombie.isDead() || zombie.reachedHouse()) {
+                            System.out.println("removing zombie -> " + zombie);
+                            toBeRemoved.add(zombie);
+                            controller.removeObjectFromZombieLayer(zombie.getImg());
+                        } else {
+                            zombie.moveForward();
+                        }
+                    });
+                    toBeRemoved.forEach(zombies::remove);
+                }
+                try { sleep(100); } catch (Exception e) { System.out.println("zombie handling thread interrupted"); }
+            }
+        }).start();
+    }
+
+    @Override
+    public String toString() {
         return "Level{" +
-                "ID=" + ID +
-//                ", coverSrc='" + coverSrc + '\'' +
-                ", bgSrc='" + bgSrc + '\'' +
-                ", zombieCount=" + zombieCount +
+                "zombieCount=" + zombieCount +
                 ", lawnMower=" + lawnMower +
-                ", zombies=" + zombieTypes +
-                ", plants=" + plantTypes +
+                ", zombies=" + zombies +
+                ", plants=" + plants +
+                ", hits=" + hits +
                 '}';
     }
 }
