@@ -5,7 +5,10 @@ import com.finalProject.game.bullets.Hit;
 import com.finalProject.game.bullets.Regular;
 import com.finalProject.level.PlantType;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class Plant extends Thread implements Serializable {
@@ -15,6 +18,7 @@ public class Plant extends Thread implements Serializable {
     private int HP;
     private int RELOADING;
     private GameController controller;
+    private ImageView img;
 
     private Hit hit;
     private boolean isFiring = false;
@@ -35,12 +39,14 @@ public class Plant extends Thread implements Serializable {
 
     public int getCost() { return cost; }
     public PlantType getType() { return type; }
-    public java.lang.String getImageSrc() { return "/pics/plants/" + type + ".png"; }
+    public String getImageSrc() { return "/pics/plants/" + type + ".png"; }
     public int getRow() { return row; }
     public int getCol() { return col; }
     public int getHP() { return HP; }
     public java.lang.String getCell() { return "cell#" + (row * 9 + col); }
     public GameController getController() { return controller; }
+    public boolean isDead() { return HP <= 0; }
+    public ImageView getImg() { return img; }
 
     private void initialize() {
         try {
@@ -54,22 +60,24 @@ public class Plant extends Thread implements Serializable {
 
     public void setController(GameController controller) { this.controller = controller; }
     public void setFiring(boolean state) { this.isFiring = state; }
-    public void setCellPos(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
+    public void setCellPos(int row, int col) { this.row = row; this.col = col; }
+    public void setImg(ImageView img) { this.img = img; }
 
     @Override
     public void run() {
+        try { sleep(3000); } catch (Exception e) { System. out.println("sleeping interrupted -> " + e.getMessage()); }
         if (type == PlantType.FLOWER || type == PlantType.DOUBLE_FLOWER || type == PlantType.CANNON) {
             isFiring = true;
         }
         while (isFiring) {
-            new Thread(hit).start();
-            try { sleep(RELOADING * 1000); } catch (Exception e) { System.out.println("sleeping interrupted when firing"); }
+            try {
+                Objects.requireNonNull(PlantType.getHit(this)).run();
+                sleep(RELOADING * 1000);
+            } catch (Exception e) {
+                System. out.println("exception occurred when firing -> " + e.getMessage());
+            }
         }
 
         // TODO: fire if a zombie isPresent in the line,
-        //  vytvor timeline, bude bezat kazde 1/2 sec a bude spustat/vypinat fire pri kazder rastline
     }
 }

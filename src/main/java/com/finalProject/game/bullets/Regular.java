@@ -4,6 +4,7 @@ import com.finalProject.exceptions.WrongPlantTypeException;
 import com.finalProject.game.Plant;
 import com.finalProject.game.PowerType;
 import com.finalProject.level.PlantType;
+import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 
@@ -11,10 +12,12 @@ public class Regular implements Hit, Serializable {
     private final PowerType POWER = PowerType.REGULAR_BULLET;
 
     private final Plant parent;
-    private final int current_x, current_y;
+    private double current_x, current_y;
     private final int end_x, end_y;
     private final int DAMAGE;
     private String imgSrc = "/pics/regular_shot.png";
+    private boolean isDead = false;
+    private ImageView img;
 
     public Regular(Plant parent, int startCellX, int startCellY, int endCellX, int endCellY) throws WrongPlantTypeException {
         this.parent = parent;
@@ -47,22 +50,62 @@ public class Regular implements Hit, Serializable {
 
     @Override
     public double getSpeed() {
-        return 0.5;
+        return 1;
     }
 
     @Override
     public int getMaxPicSize() {
-        return 15;
+        return 10;
     }
 
     @Override
     public int getOffsetY() {
-        return 5;
+        return 7;
     }
 
     @Override
     public int getOffsetX() {
-        return 5;
+        return 10;
+    }
+
+    @Override
+    public boolean isDead() {
+        return isDead;
+    }
+
+    @Override
+    public void setImg(ImageView img) {
+        this.img = img;
+    }
+
+    @Override
+    public ImageView getImg() {
+        return img;
+    }
+
+    @Override
+    public void setDead() {
+        isDead = true;
+    }
+
+    @Override
+    public void moveForward() {
+        current_x += getSpeed();
+        img.setX(current_x);
+        img.setTranslateX(current_x);
+        if (current_x >= 220) {
+            setDead();
+        }
+    }
+
+    @Override
+    public void setCurrentX(double x) {
+        current_x = x;
+    }
+
+    @Override
+    public void setCurrentY(double y) {
+        current_y = y;
     }
 
     @Override
