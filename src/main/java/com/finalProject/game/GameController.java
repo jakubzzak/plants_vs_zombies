@@ -8,13 +8,18 @@ import com.finalProject.ui.User;
 import com.finalProject.ui.Main;
 import com.finalProject.screenHandler.ControlledScreen;
 import com.finalProject.screenHandler.ScreensController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -23,6 +28,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -196,6 +205,38 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    public void endOfGame(boolean win) {
+        Text message = new Text();
+        message.setX(241); //284, w: 482
+        message.setY(142);
+        message.setFont(Font.font("Verdana", 10));
+        message.setFill(Color.WHITE);
+        if (win) {
+            message.setText("Win!");
+        } else {
+            message.setText("Game over!");
+        }
+        Timeline t = new Timeline(new KeyFrame(Duration.millis(50), e -> {
+            System.out.println("updatujem poziciu msg -> " + message.getX() + ":" + message.getY());
+            message.setX(message.getX() - 3);
+            message.setY(message.getY() - .05);
+            message.setFont(Font.font(message.getFont().getSize() + 3));
+            message.setTranslateX(message.getX());
+            message.setTranslateY(message.getY());
+        }));
+        t.setCycleCount(50);
+        t.setOnFinished(event -> {
+            try { sleep(3000); } catch (Exception e) { System.out.println("trouble with after game sleeping"); }
+            myController.setScreen("level");
+            Platform.runLater(() -> hitLayer.getChildren().remove(message));
+            screen.setPrefWidth(Main.sc.getWidth());
+            screen.setPrefHeight(Main.sc.getHeight());
+            Main.ps.setResizable(true);
+        });
+        Platform.runLater(() -> hitLayer.getChildren().add(message));
+        t.play();
+
+    }
 
     private void loadLevel() {
         System.out.println("loading level: " + current.toString());
@@ -216,7 +257,7 @@ public class GameController extends Thread implements Initializable, ControlledS
         hitLayer = new Pane();
 //        hitLayer.setStyle("-fx-border-color: red;");
         zombieLayer = new Pane();
-        zombieLayer.setStyle("-fx-border-color: red;");
+//        zombieLayer.setStyle("-fx-border-color: red;");
 
         for (int row=0; row<5; row++) {
             for (int col=0; col<9; col++) {
@@ -237,6 +278,7 @@ public class GameController extends Thread implements Initializable, ControlledS
                         int newAmount = Integer.parseInt(amount.getText()) - plant.getCost();
                         if (cell.getChildren().isEmpty() && newAmount >= 0) {
                             System.out.println("plant dropped at " + cell.getId() + ": " + plant);
+                            current.addPlant(plant);
                             ImageView view = new ImageView();
                             view.setImage(new Image(plant.getImageSrc(), CellSize.getCharacterHeight(size) * 0.7, CellSize.getCharacterHeight(size) * 0.9, true, true));
                             cell.getChildren().add(view);
@@ -366,7 +408,7 @@ public class GameController extends Thread implements Initializable, ControlledS
         deleteBtn.setDisable(true);
         helpBtn.setDisable(true);
 
-        screen.setPrefWidth(Main.sc.getWidth());;
+        screen.setPrefWidth(Main.sc.getWidth());
         screen.setPrefHeight(Main.sc.getHeight());
 
         Main.ps.setResizable(false); // match exact dimensions of the window
