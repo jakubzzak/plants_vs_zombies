@@ -60,6 +60,7 @@ public class Level extends Thread {
 
     public int getZombieCount() { return zombieCount; }
     synchronized public void addHit(Hit hit) { hits.add(hit); }
+    synchronized public void addPlant(Plant plant) { plants.add(plant); }
 
     private void loadLevel(java.lang.String filename) {
         try(Scanner sc = new Scanner(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
@@ -115,19 +116,19 @@ public class Level extends Thread {
         new Thread(() -> { // handle hits
             while (zombieCount > 0 || zombies.size() > 0) {
                 synchronized (hits) {
-//                    List<Hit> toBeRemoved = new ArrayList<>();
+                    List<Hit> toBeRemoved = new ArrayList<>();
                     hits.forEach(hit -> {
                         if (hit.isDead()) {
                             System.out.println("removing hit -> " + hit);
-//                            toBeRemoved.add(hit);
+                            toBeRemoved.add(hit);
                             controller.removeObjectFromHitLayer(hit.getImg());
                         } else {
                             hit.moveForward();
                         }
                     });
-//                    toBeRemoved.forEach(hits::remove);
+                    toBeRemoved.forEach(hits::remove);
                 }
-                try { sleep(100); } catch (Exception e) { System.out.println("hit handling thread interrupted"); }
+                try { sleep(50); } catch (Exception e) { System.out.println("hit handling thread interrupted"); }
             }
         }).start();
 
@@ -149,6 +150,8 @@ public class Level extends Thread {
                 }
                 try { sleep(250); } catch (Exception e) { System.out.println("plant handling thread interrupted"); }
             }
+            plants.forEach(plant -> plant.setFiring(false));
+            controller.endOfGame(true);
         }).start();
 
         new Thread(() -> { // releases zombies

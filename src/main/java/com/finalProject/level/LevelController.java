@@ -67,6 +67,7 @@ public class LevelController extends Thread implements Initializable, Controlled
             btn.setCursor(Cursor.HAND);
             btn.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                    myController.unloadScreen("game");
                     Main.setCurrentLevel(lvl);
                     Main.getScreenContainer().loadScreen(Main.gameScreenID, Main.gameScreenSOURCE);
                     myController.setScreen("game");
@@ -82,59 +83,6 @@ public class LevelController extends Thread implements Initializable, Controlled
             Platform.runLater(() -> content.getChildren().add(col));
         }
     }
-
-//    public void loadNewMessage(Message message) {
-//        if (clientNameLabel.getText().isEmpty()) {
-//            clientNameLabel.setText("signed as: " + client.getUsername());
-//        }
-//        Label label;
-//        String timeBuilder = "[" + (message.getTime().toString().length() == 2 ? message.getTime() + ":00:00" : message.getTime().toString().length() == 5 ? message.getTime() + ":00" : message.getTime()) + "]";
-//        if(client.getLocalPort() != message.getPort()) {
-//            label = new Label(timeBuilder + " " + message.getUsername() + " > " + message.getText());
-//            label.setAlignment(Pos.CENTER_LEFT);
-//        } else {
-//            label = new Label(message.getText() + " " + timeBuilder);
-//            label.setAlignment(Pos.CENTER_RIGHT);
-//        }
-//
-//        label.setPadding(new Insets(0, 10, 0, 10));
-//        label.setTextFill(Color.ORANGE);
-//        label.setFont(new Font("Arial Hebrew Bold", 13));
-//        label.setMaxWidth(Main.getPrimaryStage().getWidth());
-//
-//        label.setOnMouseClicked(mouseEvent -> {
-//            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-//                if (mouseEvent.getClickCount() == 2) {
-//                    label.setVisible(false);
-//                    String[] x = label.getText().split(" ");
-//                    StringBuilder output = new StringBuilder();
-//                    if (x[0].matches("\\[\\d{2}:\\d{2}:\\d{2}]")) { // delivered smg
-//                        for (int i = 3; i < x.length; i++) {
-//                            output.append(" ").append(x[i]);
-//                        }
-//                    } else { // sent msg
-//                        for (int i = 0; i < x.length-1; i++) {
-//                            output.append(" ").append(x[i]);
-//                        }
-//                    }
-//                    TextField openLabel = new TextField(output.toString().trim());
-//                    openLabel.setPrefHeight(label.getHeight() + 10);
-//                    content.getChildren().add(openLabel);
-//                    openLabel.requestFocus();
-//                    openLabel.selectAll();
-//
-//                    openLabel.setOnKeyPressed(event -> {
-//                        if(event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.ESCAPE) {
-//                            content.getChildren().remove(openLabel);
-//                            label.setVisible(true);
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//
-//        Platform.runLater(() -> content.getChildren().add(label));
-//    }
 
     public void close(ActionEvent event) {
         Platform.exit();

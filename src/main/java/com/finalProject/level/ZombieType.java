@@ -85,9 +85,9 @@ public enum ZombieType {
             case STRONGEST_DOORS:
             case STRONGEST_BRICK:
             case STRONGEST_SHIRT:
-                return 10;
+                return 15;
             case GIANT:
-                return 2;
+                return 15;
             default:
                 throw new WrongZombieTypeException("No such zombie with id " + type);
         }

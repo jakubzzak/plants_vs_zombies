@@ -54,7 +54,12 @@ public class Zombie extends Thread {
 //        if (isDead() || reachedHouse()) {
 //            return;
 //        }
-        this.x -= 0.2;
+        try {
+            this.x -= ZombieType.getMovingSpeed(type);
+        } catch (Exception e) {
+            System.out.println("zombie moveForward failed");
+            HP = 0;
+        }
         img.setX(x);
         img.setTranslateX(x);
     }
