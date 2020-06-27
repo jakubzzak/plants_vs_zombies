@@ -1,0 +1,5 @@
+cover_src: lvl3_cover.png
+bg_src: garden2.png
+zombie_count: 5
+plants: CANNON FLOWER DOUBLE_FLOWER MINE LARGE_BARRIER
+zombies: PHARAON STRONGER_PHARAON HIPPIE GIANT

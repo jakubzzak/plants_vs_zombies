@@ -36,7 +36,7 @@ public class LevelController extends Thread implements Initializable, Controlled
     @FXML
     private Menu helpBtnLabel;
     @FXML
-    private Menu userInfo;
+    private MenuItem userInfo;
 
     @FXML
     private MenuItem closeBtn;
@@ -63,11 +63,21 @@ public class LevelController extends Thread implements Initializable, Controlled
 //            view.setFitWidth(300);
             view.setFitHeight(200);
             // btn
-            Button btn = new Button("Level " + (lvl.getID() + 1));
+            Button btn;
+            if (user.getLevelStatus(lvl) == null) {
+                btn = new Button("Level " + (lvl.getID() + 1));
+            } else if (user.getLevelStatus(lvl)) {
+                btn = new Button("Win");
+                btn.setDisable(true);
+            } else {
+                btn = new Button("Lose");
+                btn.setDisable(true);
+            }
             btn.setCursor(Cursor.HAND);
             btn.setOnMouseClicked(mouseEvent -> {
+                btn.setDisable(true);
+                myController.unloadScreen("game");
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                    myController.unloadScreen("game");
                     Main.setCurrentLevel(lvl);
                     Main.getScreenContainer().loadScreen(Main.gameScreenID, Main.gameScreenSOURCE);
                     myController.setScreen("game");
@@ -96,14 +106,20 @@ public class LevelController extends Thread implements Initializable, Controlled
 
         levels = Main.getLevels();
 
-        deleteBtn.setDisable(true);
-        helpBtn.setDisable(true);
+//        deleteBtn.setDisable(true);
+//        helpBtn.setDisable(true);
 
         fillContent();
 
-        screen.setPrefWidth(Main.sc.getWidth());
-        content.setPrefWidth(Main.sc.getWidth());
-        screen.setPrefHeight(Main.sc.getHeight());
+//        Main.ps.setHeight(Main.HEIGHT);
+//        Main.ps.setWidth(Main.WIDTH);
+
+        Main.ps.setResizable(true);
+
+//        screen.setPrefWidth(Main.sc.getWidth());
+//        content.setPrefWidth(Main.sc.getWidth());
+//        screen.setPrefHeight(Main.sc.getHeight());
+
 
         Main.sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
             screen.setPrefWidth((double)newSceneWidth);

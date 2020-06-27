@@ -93,7 +93,7 @@ public enum PlantType {
                 return -1;
             case FLOWER:
             case DOUBLE_FLOWER:
-                return 10;
+                return 8;
             case EATER:
                 return 12;
             case CACTUS:
@@ -109,7 +109,7 @@ public enum PlantType {
             case CORN:
             case DOUBLE_CANNON:
             case FROZEN_CANNON:
-                return 2;
+                return 200;
             case BARRIER:
             case BARRIER_APRON:
             case BARRIER_NURSE:
@@ -121,9 +121,9 @@ public enum PlantType {
             case DOUBLE_FLOWER:
                 return 50;
             case EATER:
-                return 12;
+                return 10000;
             case CACTUS:
-                return 1;
+                return 100;
             default:
                 throw new WrongPlantTypeException("No such plant with id " + type);
         }
@@ -133,7 +133,7 @@ public enum PlantType {
         Random rnd = new Random();
         switch (plant.getType()) {
             case CANNON:
-                return new Regular(plant, plant.getRow(), plant.getCol(), plant.getCol() + 3, plant.getRow());
+                return new Regular(plant, plant.getCol() + 3, plant.getRow());
             case CORN:
                 return null;
             case CACTUS:
@@ -146,7 +146,7 @@ public enum PlantType {
                 return null;
             case FLOWER:
             case DOUBLE_FLOWER:
-                return new Sun(plant, plant.getRow(), plant.getCol(), rnd.nextInt(5),  rnd.nextInt(9));
+                return new Sun(plant, rnd.nextInt(5),  rnd.nextInt(9));
             case EATER:
                 return null;
             case FROZEN_CANNON:
@@ -191,7 +191,11 @@ public enum PlantType {
         }
     }
 
-    public static boolean ifFlower(Plant plant) {
+    public static boolean isFlower(Plant plant) {
         return plant.getType() == PlantType.FLOWER || plant.getType() == PlantType.DOUBLE_FLOWER;
+    }
+
+    public static boolean isBarrier(Plant plant) {
+        return plant.getType() == PlantType.BARRIER || plant.getType() == PlantType.BARRIER_APRON || plant.getType() == PlantType.BARRIER_NURSE || plant.getType() == PlantType.LARGE_BARRIER;
     }
 }

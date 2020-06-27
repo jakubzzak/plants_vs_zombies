@@ -20,7 +20,9 @@ public interface Hit {
     ImageView getImg();
     void setDead();
     void moveForward();
+    double getX();
     void setCurrentX(double x);
     void setCurrentY(double y);
-    void run();
+    void releaseHit();
+
 }

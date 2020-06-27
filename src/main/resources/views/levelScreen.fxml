@@ -15,6 +15,8 @@
                   <KeyCodeCombination alt="UP" code="F1" control="ANY" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
                <items>
+                  <MenuItem fx:id="userInfo" disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Signed as: " />
+                  <MenuItem disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Save (coming soon)" />
                   <MenuItem fx:id="closeBtn" mnemonicParsing="false" onAction="#close" style="-fx-font-family: Arial Hebrew Bold;" text="Close">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="ESCAPE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -27,7 +29,8 @@
                   <KeyCodeCombination alt="UP" code="F2" control="ANY" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
                <items>
-                  <MenuItem fx:id="deleteBtn" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Delete" />
+                  <MenuItem disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Create level (coming soon)" />
+                  <MenuItem disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Remove level (coming soon)" />
                </items>
             </Menu>
             <Menu fx:id="helpBtnLabel" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Help">
@@ -35,13 +38,8 @@
                   <KeyCodeCombination alt="UP" code="F3" control="ANY" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
                <items>
-                  <MenuItem fx:id="helpBtn" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="About" />
+                  <MenuItem fx:id="helpBtn" disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Choose a level and play! Be careful though, each level can be played just once:)" />
                </items>
-            </Menu>
-            <Menu fx:id="userInfo" disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Signed as: ">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="F1" control="ANY" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
             </Menu>
         </menus>
       </MenuBar>

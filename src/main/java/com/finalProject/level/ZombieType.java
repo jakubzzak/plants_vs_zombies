@@ -63,7 +63,7 @@ public enum ZombieType {
         }
     }
 
-    public static int getMovingSpeed(ZombieType type) throws WrongZombieTypeException {
+    public static double getMovingSpeed(ZombieType type) throws WrongZombieTypeException {
         switch (type) {
             case HIPPIE:
             case SINGER:
@@ -72,10 +72,10 @@ public enum ZombieType {
             case COWBOY:
             case BALLOON:
             case STRONGER_PIRATE:
-                return 15;
             case REGULAR:
-            case ARMY:
             case EASTER:
+            case ARMY:
+                return 0.5;
             case PHARAON:
             case STRONGER_SNOWY:
             case STRONGER_CONE:
@@ -85,9 +85,9 @@ public enum ZombieType {
             case STRONGEST_DOORS:
             case STRONGEST_BRICK:
             case STRONGEST_SHIRT:
-                return 15;
+                return 0.2;
             case GIANT:
-                return 15;
+                return 0.1;
             default:
                 throw new WrongZombieTypeException("No such zombie with id " + type);
         }
@@ -114,9 +114,9 @@ public enum ZombieType {
             case STRONGEST_BRICK:
             case STRONGEST_SHIRT:
             case BALLOON:
-                return 10;
+                return 1;
             case GIANT:
-                return 1000;
+                return 100;
             default:
                 throw new WrongZombieTypeException("No such zombie with id " + type);
         }
