@@ -9,17 +9,15 @@ import com.finalProject.ui.Main;
 import com.finalProject.screenHandler.ControlledScreen;
 import com.finalProject.screenHandler.ScreensController;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -31,10 +29,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class GameController extends Thread implements Initializable, ControlledScreen {
@@ -44,6 +43,7 @@ public class GameController extends Thread implements Initializable, ControlledS
     Level current;
 
     CellSize size = CellSize.SMALL;
+    Map<Integer, HBox> cells = new HashMap<>();
 
     @FXML
     private VBox screen;
@@ -76,7 +76,7 @@ public class GameController extends Thread implements Initializable, ControlledS
     @FXML
     private Menu helpBtnLabel;
     @FXML
-    private Menu userInfo;
+    private MenuItem userInfo;
 
     @FXML
     private MenuItem closeBtn;
@@ -88,52 +88,43 @@ public class GameController extends Thread implements Initializable, ControlledS
     public GridPane getPlantLayer() { return plantLayer; }
     public Pane getHitLayer() { return hitLayer; }
 
+    private void loadLevel() {
+        System.out.println("loading level: " + current.toString());
+        gameArea.setStyle("-fx-background-image: url('" + current.getBgImgSrc() + "'); -fx-background-size: contain");
+        try{
+            loadCards();
+            createGameArea();
+            loadLawnMowers();
+            current.run();
+        } catch (Exception e) {
+            System.out.println("pruser pri handlovani hry -> " + e.getMessage());
+        }
+    }
+
     public void releaseZombie(Zombie zombie) {
         ImageView zomb = new ImageView(new Image(zombie.getImageSrc(), zombie.getMaxPicSize(), zombie.getMaxPicSize(), true, true));
-//        System.out.println(hit.getParent().getCol() + ":" + hit.getParent().getRow());
+        zombie.setImg(zomb);
         zomb.setX(210);
         zomb.setY(17 + zombie.getRow() * 22 - (10));
         zomb.setTranslateX(zomb.getX());
         zomb.setTranslateY(zomb.getY());
         zombie.setAxes(zomb.getX(), zomb.getY());
-        zombie.setImg(zomb);
         addObjectToZombieLayer(zomb);
-//        Platform.runLater(() -> hitLayer.getChildren().add(zomb));
-//        new Thread(() -> {
-//            while (!zombie.isDead() && !zombie.reachedHouse()) {
-//                zombie.moveForward();
-//                zomb.setX(zombie.getX());
-//                zomb.setTranslateX(zombie.getX());
-//                try { sleep(50); } catch (Exception e) { System.out.println("zombie moving thread interrupted"); }
-//            }
-//        }).start();
-        System.out.println("zombie released: " + zombie);
     }
     public void releaseHit(Hit hit) {
         //TODO: calculate trajectory
         ImageView bullet = new ImageView(new Image(hit.getImageSrc(), hit.getMaxPicSize(), hit.getMaxPicSize(), true, true));
-//        System.out.println(hit.getParent().getCol() + ":" + hit.getParent().getRow());
-        bullet.setX(65 + hit.getOffsetX() + hit.getParent().getCol() * 18);
+        bullet.setX(hit.getOffsetX() + hit.getParent().getX());
         bullet.setY(15 + hit.getOffsetY() + hit.getParent().getRow() * 22);
         bullet.setTranslateX(bullet.getX());
         bullet.setTranslateY(bullet.getY());
         hit.setImg(bullet);
         hit.setCurrentX(bullet.getX());
         hit.setCurrentY(bullet.getY());
-//        Timeline t = new Timeline(new KeyFrame(Duration.millis(25), e -> {
-////            System.out.println("updatujem poziciu -> " + bullet.getX() + ":" + bullet.getY());
-//            bullet.setX(bullet.getX() + hit.getSpeed());
-////            bullet.setY(bullet.getY() + 0.2);
-//            bullet.setTranslateX(bullet.getX());
-//            bullet.setTranslateY(bullet.getY());
-//        }));
-//        t.setCycleCount(200);
-//        t.setOnFinished(event -> removeObjectFromHitLayer(bullet));
-        if (PlantType.ifFlower(hit.getParent())) {
+        if (PlantType.isFlower(hit.getParent())) {
             bullet.setOnMouseReleased(click -> {
                 try {
                     amount.setText(Integer.parseInt(amount.getText()) + PlantType.getDamagePerHit(hit.getParent().getType()) + "");
-//                    t.stop();
                     hit.setDead();
                     removeObjectFromHitLayer(bullet);
                 } catch (Exception e) {
@@ -141,114 +132,117 @@ public class GameController extends Thread implements Initializable, ControlledS
                 }
             });
         }
-//        try { Thread.sleep(3000); } catch (InterruptedException ie) { System.out.println("sleeping interrupted at creating hit"); }
-//        Platform.runLater(() -> hitLayer.getChildren().add(bullet));
         addObjectToHitLayer(bullet);
         current.addHit(hit);
-//        t.play();
     }
 
     public void addObjectToZombieLayer(ImageView pic) {
         try{
 //            CompletableFuture.supplyAsync(() -> zombieLayer.getChildren().add(pic), Platform::runLater).join();
-            System.out.println("trying to add zombie");
-            Platform.runLater(() -> zombieLayer.getChildren().add(pic));
+//            System.out.println("trying to add zombie");
+            synchronized (zombieLayer) {
+                Platform.runLater(() -> zombieLayer.getChildren().add(pic));
+            }
         } catch (Exception e ) {
-            System.out.println("add shiiiiiiiit at zombieLayer");
+            System.out.println("add at zombieLayer failed");
         }
     }
     public void removeObjectFromZombieLayer(ImageView pic) {
         try{
 //            CompletableFuture.supplyAsync(() -> hitLayer.getChildren().remove(pic), Platform::runLater).join();
-            System.out.println("trying to remove zombie");
-            Platform.runLater(() -> zombieLayer.getChildren().remove(pic));
+            synchronized (zombieLayer) {
+//                System.out.println("trying to remove zombie");
+                Platform.runLater(() -> zombieLayer.getChildren().remove(pic));
+            }
         } catch (Exception e ) {
-            System.out.println("remove shiiiiiiiit at zombieLayer");
+            System.out.println("remove at zombieLayer failed");
         }
     }
 
     public void addObjectToHitLayer(ImageView pic) {
         try{
 //            CompletableFuture.supplyAsync(() -> hitLayer.getChildren().add(pic), Platform::runLater).join();
-            System.out.println("trying to add hit");
-            Platform.runLater(() -> hitLayer.getChildren().add(pic));
+            synchronized (hitLayer) {
+//                System.out.println("trying to add hit");
+                Platform.runLater(() -> hitLayer.getChildren().add(pic));
+            }
         } catch (Exception e ) {
-            System.out.println("add shiiiiiiiit at hitLayer");
+            System.out.println("add at hitLayer failed");
         }
     }
     public void removeObjectFromHitLayer(ImageView pic) {
         try{
 //            CompletableFuture.supplyAsync(() -> hitLayer.getChildren().remove(pic), Platform::runLater).join();
-//            System.out.println("found: " + found);
-            System.out.println("trying to remove hit");
-            Platform.runLater(() -> hitLayer.getChildren().remove(pic));
+            synchronized (hitLayer) {
+//                System.out.println("trying to remove hit");
+                Platform.runLater(() -> hitLayer.getChildren().remove(pic));
+            }
         } catch (Exception e ) {
-            System.out.println("remove shiiiiiiiit at hitLayer");
+            System.out.println("remove at hitLayer failed");
         }
     }
 
     public void addObjectToPlantLayer(ImageView pic) {
         try {
-            System.out.println("trying to add plant");
-            Platform.runLater(() -> plantLayer.getChildren().add(pic));
+            synchronized (plantLayer) {
+//                System.out.println("trying to add plant");
+                Platform.runLater(() -> plantLayer.getChildren().add(pic));
+            }
         } catch (Exception e ) {
-            System.out.println("add shiiiiiiiit at fieldLayer");
+            System.out.println("add at fieldLayer failed");
         }
     }
-    public void removeObjectFromPlantLayer(ImageView pic) {
+    public void removeObjectFromPlantLayer(int cellId, ImageView pic) {
         try {
 //            CompletableFuture.supplyAsync(() -> plantLayer.getChildren().remove(pic), Platform::runLater).join();
-            System.out.println("trying to remove plant");
-            Platform.runLater(() -> plantLayer.getChildren().remove(pic));
+            synchronized (plantLayer) {
+                HBox obj = cells.get(cellId);
+                if (obj != null) {
+                    cells.put(cellId, null);
+                    Platform.runLater(() -> obj.getChildren().remove(pic));
+                } else {
+                    System.out.println("cell not present in cells!");
+                }
+            }
         } catch (Exception e ) {
-            System.out.println("remove shiiiiiiiit at fieldLayer");
+            e.getStackTrace();
         }
     }
 
     public void endOfGame(boolean win) {
         Text message = new Text();
-        message.setX(241); //284, w: 482
-        message.setY(142);
+        message.setX(220 - 110); //284, w: 482 // 241
+        message.setY(100 - 8); // 142
         message.setFont(Font.font("Verdana", 10));
         message.setFill(Color.WHITE);
+        message.setTextAlignment(TextAlignment.CENTER);
         if (win) {
-            message.setText("Win!");
+            user.setLevelStatus(current, true);
+            message.setText("Good job!");
         } else {
+            user.setLevelStatus(current, false);
             message.setText("Game over!");
         }
         Timeline t = new Timeline(new KeyFrame(Duration.millis(50), e -> {
-            System.out.println("updatujem poziciu msg -> " + message.getX() + ":" + message.getY());
-            message.setX(message.getX() - 3);
-            message.setY(message.getY() - .05);
-            message.setFont(Font.font(message.getFont().getSize() + 3));
+            message.setX(message.getX() - 1.5);
+            message.setY(message.getY() - .5);
+            message.setFont(Font.font(message.getFont().getSize() + 1.5));
             message.setTranslateX(message.getX());
             message.setTranslateY(message.getY());
         }));
-        t.setCycleCount(50);
+        t.setCycleCount(30);
         t.setOnFinished(event -> {
+            myController.unloadScreen("level");
             try { sleep(3000); } catch (Exception e) { System.out.println("trouble with after game sleeping"); }
+            myController.loadScreen("level", Main.lvlScreenSOURCE);
             myController.setScreen("level");
             Platform.runLater(() -> hitLayer.getChildren().remove(message));
-            screen.setPrefWidth(Main.sc.getWidth());
-            screen.setPrefHeight(Main.sc.getHeight());
-            Main.ps.setResizable(true);
+//            screen.setPrefWidth(Main.ps.getWidth());
+//            screen.setPrefHeight(Main.ps.getHeight());
         });
         Platform.runLater(() -> hitLayer.getChildren().add(message));
         t.play();
 
-    }
-
-    private void loadLevel() {
-        System.out.println("loading level: " + current.toString());
-        gameArea.setStyle("-fx-background-image: url('" + current.getBgImgSrc() + "'); -fx-background-size: cover");
-        try{
-            loadCards();
-            loadLawnMowers();
-            createGameArea();
-            current.start();
-        } catch (Exception e) {
-            System.out.println("pruser pri handlovani hry -> " + e.getMessage());
-        }
     }
 
     private void createGameArea() throws WrongWindowSizeException {
@@ -262,7 +256,7 @@ public class GameController extends Thread implements Initializable, ControlledS
         for (int row=0; row<5; row++) {
             for (int col=0; col<9; col++) {
                 HBox cell = new HBox();
-                cell.setPrefSize(CellSize.getCharacterHeight(size), CellSize.getCharacterHeight(size));
+                cell.setPrefSize(CellSize.getCharacterWidth(size), CellSize.getCharacterHeight(size));
                 cell.setId("cell#" + (row * 9 + col));
                 cell.setAlignment(Pos.CENTER);
 
@@ -274,13 +268,14 @@ public class GameController extends Thread implements Initializable, ControlledS
                     try {
                         Plant plant = (Plant) dragEvent.getDragboard().getContent(DataFormat.lookupMimeType("plant"));
                         plant.setCellPos(finalRow, finalCol);
+                        cells.put(plant.getCellId(), cell);
                         plant.setController(this);
                         int newAmount = Integer.parseInt(amount.getText()) - plant.getCost();
                         if (cell.getChildren().isEmpty() && newAmount >= 0) {
                             System.out.println("plant dropped at " + cell.getId() + ": " + plant);
                             current.addPlant(plant);
                             ImageView view = new ImageView();
-                            view.setImage(new Image(plant.getImageSrc(), CellSize.getCharacterHeight(size) * 0.7, CellSize.getCharacterHeight(size) * 0.9, true, true));
+                            view.setImage(new Image(plant.getImageSrc(), CellSize.getCharacterWidth(size) * 0.7, CellSize.getCharacterHeight(size) * 0.7, true, true));
                             cell.getChildren().add(view);
                             plant.start();
                             plant.setImg(view);
@@ -302,14 +297,25 @@ public class GameController extends Thread implements Initializable, ControlledS
             }
         }
 
-        plantLayer.setPadding(new Insets(33, 10, 8, 110));
-        zombieLayer.setPadding(new Insets(33, 10, 8, 110));
+        plantLayer.setPadding(new Insets(35, 10, 8, 110));
+        zombieLayer.setPadding(new Insets(35, 10, 8, 110));
         gameArea.getChildren().addAll(zombieLayer, plantLayer, hitLayer);
     }
 
     private void loadLawnMowers() {
         if (current.hasLawnMower()) {
-            // TODO: load lawnMowers
+            for (int row=0; row<5; row++) {
+                LawnMower lawnMower = new LawnMower(row, -1, this);
+                current.addLawnMover(lawnMower);
+                ImageView mover = new ImageView(new Image(lawnMower.getImageSrc(), lawnMower.getMaxPicSize(), lawnMower.getMaxPicSize(), true, true));
+                lawnMower.setImg(mover);
+                mover.setX(lawnMower.getX());
+                mover.setY(17 + lawnMower.getRow() * 22 - 5);
+                mover.setTranslateX(mover.getX());
+                mover.setTranslateY(mover.getY());
+//                mover.setRotate(40);
+                addObjectToZombieLayer(mover);
+            }
         }
     }
 
@@ -349,7 +355,7 @@ public class GameController extends Thread implements Initializable, ControlledS
                 if (imgView instanceof ImageView) {
                     Image img = ((ImageView) imgView).getImage();
                     try {
-                        img = new Image(img.getUrl(), CellSize.getCharacterHeight(size), 50, true, true);
+                        img = new Image(img.getUrl(), CellSize.getCharacterWidth(size), 50, true, true);
                     } catch (WrongWindowSizeException e) {
                         e.printStackTrace();
                     }
@@ -368,16 +374,12 @@ public class GameController extends Thread implements Initializable, ControlledS
             });
             col.setOnDragEntered(dragEvent -> {
                 Main.sc.setCursor(Cursor.CLOSED_HAND);
-                System.out.println("drag entered");
+//                System.out.println("drag entered");
                 dragEvent.consume();
             });
-//            col.setOnDragExited(dragEvent -> {
-//                Main.sc.setCursor(Cursor.CLOSED_HAND);
-//                System.out.println("drag exited");
-//            });
             col.setOnDragDone(dragEvent -> {
                 Main.sc.setCursor(Cursor.DEFAULT);
-                System.out.println("drag done");
+//                System.out.println("drag done");
                 gameArea.getChildren().remove(hitLayer);
                 gameArea.getChildren().add(hitLayer);
             });
@@ -405,26 +407,19 @@ public class GameController extends Thread implements Initializable, ControlledS
 
         user.setGameController(this);
 
-        deleteBtn.setDisable(true);
-        helpBtn.setDisable(true);
+//        deleteBtn.setDisable(true);
+//        helpBtn.setDisable(true);
 
-        screen.setPrefWidth(Main.sc.getWidth());
-        screen.setPrefHeight(Main.sc.getHeight());
-
-        Main.ps.setResizable(false); // match exact dimensions of the window
-        Main.ps.setHeight(Main.INIT_HEIGHT);
+        Main.ps.setHeight(Main.INIT_HEIGHT - 25);
         Main.ps.setWidth(Main.INIT_WIDTH);
+        Main.ps.setResizable(false);
+
         // TODO: 3 sizes, init | middle | large
 
-        Main.sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
-            screen.setPrefWidth((double)newSceneWidth);
-        });
-        Main.sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
-            screen.setPrefHeight((double)newSceneHeight);
-        });
-        // h: 284, w: 482 cell: 48
+        // h: 284, w: 482 cell:
         // h: 540, w: 720 cell:
         // h: 540, w: 720 cell:
+
         loadLevel();
     }
 

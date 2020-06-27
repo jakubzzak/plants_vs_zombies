@@ -20,8 +20,10 @@ public class Main extends Application {
     private static Level currentLevel;
     private static List<Level> levels;
     private static final ScreensController screenContainer = new ScreensController();
-    public static double INIT_HEIGHT = 489; // TODO: move to config
-    public static double INIT_WIDTH = 360;
+    public static double INIT_HEIGHT = 250; // TODO: move to config
+    public static double INIT_WIDTH = 300;
+    public static double HEIGHT = INIT_HEIGHT; // TODO: move to config
+    public static double WIDTH = INIT_WIDTH;
 
     public static String welcomeScreenID = "welcome";
     public static String welcomeScreenSOURCE = "/views/welcomeScreen.fxml";
@@ -45,12 +47,14 @@ public class Main extends Application {
         sc = new Scene(root);
 
         sc.widthProperty().addListener((observable, old, newSceneWidth) -> {
-            INIT_WIDTH = (double) newSceneWidth;
+//            System.out.println("new window width: ");
+            WIDTH = (double) newSceneWidth;
         });
         sc.heightProperty().addListener((observable, old, newSceneHeight) -> {
-            INIT_HEIGHT = (double) newSceneHeight;
+            HEIGHT = (double) newSceneHeight;
         });
         primaryStage.setScene(sc);
+
 
         // always first load a new screen and set it as active afterwards
         screenContainer.loadScreen(welcomeScreenID, welcomeScreenSOURCE);
@@ -58,13 +62,20 @@ public class Main extends Application {
 
         primaryStage.show();
         ps = primaryStage;
+//        ps.setHeight(INIT_HEIGHT);
+//        ps.setWidth(INIT_WIDTH);
 
+        INIT_HEIGHT = ps.getHeight();
+        INIT_WIDTH = ps.getWidth();
         loadLevels();
-        loadProps();
+//        loadProps();
     }
 
     private static void loadProps() {
         props = new Properties(); // TODO: check it out
+        props.put("gameWindowSizeSmall", List.of(489, 360));
+        props.put("gameWindowSizeMedium", List.of(489, 360));
+        props.put("gameWindowSizeLarge", List.of(489, 360));
     }
 
     private static void loadLevels() {
@@ -88,7 +99,9 @@ public class Main extends Application {
     public static Level getCurrentLevel() { return currentLevel; }
     public double getHeight() { return INIT_HEIGHT; }
     public double getWidth() { return INIT_WIDTH; }
-    public Properties getAppProps() { return props; }
+    public static Properties getProps() {
+        return props;
+    }
 
     public static void setCurrentLevel(Level currentLevel) { Main.currentLevel = currentLevel; }
     public void setHeight(double newSize) { INIT_HEIGHT = newSize; }

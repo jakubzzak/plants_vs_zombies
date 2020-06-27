@@ -16,11 +16,13 @@
             <menus>
                 <Menu fx:id="fileBtnLabel" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="File">
                     <items>
-                        <MenuItem fx:id="closeBtn" mnemonicParsing="false" onAction="#close" style="-fx-font-family: Arial Hebrew Bold;" text="Close">
-                             <accelerator>
-                                <KeyCodeCombination alt="UP" code="ESCAPE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                             </accelerator>
-                        </MenuItem>
+                        <MenuItem fx:id="userInfo" disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Signed as: " />
+                  <MenuItem disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Pause (coming soon)" />
+                  <MenuItem fx:id="closeBtn" mnemonicParsing="false" onAction="#close" style="-fx-font-family: Arial Hebrew Bold;" text="Close">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="ESCAPE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
                     </items>
                    <accelerator>
                       <KeyCodeCombination alt="UP" code="F1" control="ANY" meta="UP" shift="UP" shortcut="UP" />
@@ -28,7 +30,9 @@
                 </Menu>
                 <Menu fx:id="editBtnLabel" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Edit">
                     <items>
-                        <MenuItem fx:id="deleteBtn" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Delete" />
+                        <MenuItem fx:id="deleteBtn" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="small (active)" />
+                  <MenuItem disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="medium (coming soon)" />
+                  <MenuItem disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="large (coming soon)" />
                     </items>
                    <accelerator>
                       <KeyCodeCombination alt="UP" code="F2" control="ANY" meta="UP" shift="UP" shortcut="UP" />
@@ -36,17 +40,12 @@
                 </Menu>
                 <Menu fx:id="helpBtnLabel" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Help">
                     <items>
-                        <MenuItem fx:id="helpBtn" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="About" />
+                        <MenuItem fx:id="helpBtn" disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Drag and drop the plants to kill all the zombies. Good luck!" />
                     </items>
                    <accelerator>
                       <KeyCodeCombination alt="UP" code="F3" control="ANY" meta="UP" shift="UP" shortcut="UP" />
                    </accelerator>
                 </Menu>
-            <Menu fx:id="userInfo" disable="true" mnemonicParsing="false" style="-fx-font-family: Arial Hebrew Bold;" text="Signed as: ">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="F1" control="ANY" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </Menu>
             </menus>
         </MenuBar>
       <SplitPane dividerPositions="0.2" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" VBox.vgrow="ALWAYS">

@@ -1,10 +1,7 @@
 package com.finalProject.game;
 
-import com.finalProject.exceptions.WrongPowerTypeException;
 import com.finalProject.game.bullets.Hit;
-import com.finalProject.game.bullets.Regular;
 import com.finalProject.level.PlantType;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
@@ -19,6 +16,7 @@ public class Plant extends Thread implements Serializable {
     private int RELOADING;
     private GameController controller;
     private ImageView img;
+    private Double x;
 
     private Hit hit;
     private boolean isFiring = false;
@@ -29,24 +27,29 @@ public class Plant extends Thread implements Serializable {
         initialize();
     }
 
-    public Plant(PlantType type, int cost, int row, int col) {
-        this.type = type;
-        this.cost = cost;
-        this.row = row;
-        this.col = col;
-        initialize();
-    }
-
     public int getCost() { return cost; }
     public PlantType getType() { return type; }
     public String getImageSrc() { return "/pics/plants/" + type + ".png"; }
     public int getRow() { return row; }
     public int getCol() { return col; }
+    public double getX() {
+        if (x == null) {
+            try{
+                x = 65. + col * 18;
+            } catch (Exception e) {
+                x = 0.;
+                System.out.println("getting X of a plant failed");
+            }
+        }
+        return x;
+    }
     public int getHP() { return HP; }
-    public java.lang.String getCell() { return "cell#" + (row * 9 + col); }
+    public String getCell() { return "cell#" + (row * 9 + col); }
+    public int getCellId() { return row * 9 + col; }
     public GameController getController() { return controller; }
     public boolean isDead() { return HP <= 0; }
     public ImageView getImg() { return img; }
+    public boolean isFiring() { return isFiring; }
 
     private void initialize() {
         try {
@@ -63,21 +66,29 @@ public class Plant extends Thread implements Serializable {
     public void setCellPos(int row, int col) { this.row = row; this.col = col; }
     public void setImg(ImageView img) { this.img = img; }
 
+    synchronized public void isBeingEaten(Zombie zombie) {
+        if (HP <= 0) {
+            zombie.setEating(false);
+            zombie.setEatingPlant(null);
+        } else {
+            HP -= zombie.getDamage();
+        }
+    }
+
     @Override
     public void run() {
         try { sleep(3000); } catch (Exception e) { System. out.println("sleeping interrupted -> " + e.getMessage()); }
-        if (type == PlantType.FLOWER || type == PlantType.DOUBLE_FLOWER || type == PlantType.CANNON) {
+        if (type == PlantType.FLOWER || type == PlantType.DOUBLE_FLOWER) {
             isFiring = true;
         }
         while (isFiring) {
             try {
-                Objects.requireNonNull(PlantType.getHit(this)).run();
+                Objects.requireNonNull(PlantType.getHit(this)).releaseHit();
                 sleep(RELOADING * 1000);
             } catch (Exception e) {
-                System. out.println("exception occurred when firing -> " + e.getMessage());
+//                System.out.println("exception occurred when firing");
+                e.getStackTrace();
             }
         }
-
-        // TODO: fire if a zombie isPresent in the line,
     }
 }

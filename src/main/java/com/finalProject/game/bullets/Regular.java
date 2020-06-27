@@ -19,10 +19,8 @@ public class Regular implements Hit, Serializable {
     private boolean isDead = false;
     private ImageView img;
 
-    public Regular(Plant parent, int startCellX, int startCellY, int endCellX, int endCellY) throws WrongPlantTypeException {
+    public Regular(Plant parent, int endCellX, int endCellY) throws WrongPlantTypeException {
         this.parent = parent;
-        this.current_x = startCellX;
-        this.current_y = startCellY;
         this.end_x = endCellX;
         this.end_y = endCellY;
         this.DAMAGE = PlantType.getDamagePerHit(parent.getType());
@@ -99,6 +97,11 @@ public class Regular implements Hit, Serializable {
     }
 
     @Override
+    public double getX() {
+        return current_x;
+    }
+
+    @Override
     public void setCurrentX(double x) {
         current_x = x;
     }
@@ -109,11 +112,7 @@ public class Regular implements Hit, Serializable {
     }
 
     @Override
-    public void run() {
+    public void releaseHit() {
         parent.getController().releaseHit(this);
-        // TODO: create bullet pic
-//        while (current_x != end_x) {
-//            // TODO: move bullet to the right
-//        }
     }
 }

@@ -19,10 +19,8 @@ public class Sun implements Hit, Serializable {
     private boolean isDead = false;
     private ImageView img;
 
-    public Sun(Plant parent, int startCellX, int startCellY, int endCellX, int endCellY) throws WrongPlantTypeException {
+    public Sun(Plant parent, int endCellX, int endCellY) throws WrongPlantTypeException {
         this.parent = parent;
-        this.current_x = startCellX;
-        this.current_y = startCellY;
         this.end_x = endCellX;
         this.end_y = endCellY;
         this.DAMAGE = PlantType.getDamagePerHit(parent.getType());
@@ -99,6 +97,11 @@ public class Sun implements Hit, Serializable {
     }
 
     @Override
+    public double getX() {
+        return current_x;
+    }
+
+    @Override
     public void setCurrentX(double x) {
         current_x = x;
     }
@@ -109,7 +112,7 @@ public class Sun implements Hit, Serializable {
     }
 
     @Override
-    public void run() {
+    public void releaseHit() {
         parent.getController().releaseHit(this);
 //        new Timeline(new KeyFrame(Duration.millis(10), e -> {
 //            ImageView bullet = new ImageView(new Image(imgSrc, 50, 50, true, true));
@@ -120,4 +123,5 @@ public class Sun implements Hit, Serializable {
 //            // TODO: move bullet to the right
 //        }
     }
+
 }

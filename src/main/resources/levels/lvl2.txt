@@ -1,5 +1,5 @@
 cover_src: lvl2_cover.png
 bg_src: garden2.png
-zombie_count: 50
+zombie_count: 2
 plants: FLOWER CANNON BARRIER CORN MINE
 zombies: REGULAR PIRATE SWIMMER STRONGER_CONE COWBOY

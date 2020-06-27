@@ -1,18 +1,21 @@
 package com.finalProject.game;
 
+import com.finalProject.game.bullets.Hit;
 import com.finalProject.level.ZombieType;
 
 import javafx.scene.image.ImageView;
 
 
-public class Zombie extends Thread {
+public class Zombie {
     private int row, col;
     private ZombieType type;
     private double x, y;
     private boolean eating = false;
+    private Plant eatingPlant;
     private int HP;
-    private int RELOADING = 1;
+    private final int RELOADING = 1;
     private int DAMAGE;
+    private double SPEED;
     private GameController controller;
     private ImageView img;
 
@@ -20,27 +23,19 @@ public class Zombie extends Thread {
         this.type = type;
         this.row = row;
         this.x = x;
-        initialize();
-    }
-
-    private void initialize() {
         try {
             this.HP = ZombieType.getHP(type);
             this.DAMAGE = ZombieType.getDamageAtOneHit(type);
+            this.SPEED = ZombieType.getMovingSpeed(type);
         } catch (Exception e) {
             System.out.println("zombie initialization failed -> " + e.getMessage());
         }
     }
 
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
-    public void setAxes(double x, double y) { this.x = x; this.y = y; }
-    public void setEating(boolean eating) { this.eating = eating; }
-    public void setImg(ImageView img) { this.img = img; }
-
     public double getX() { return x; }
     public double getY() { return y; }
     public boolean isEating() { return eating; }
+    public int getDamage() { return DAMAGE; }
     public int getRow() { return row; }
     public int getCol() { return col; }
     public int getHP() { return HP; }
@@ -50,18 +45,32 @@ public class Zombie extends Thread {
     public int getMaxPicSize() { return 60; }
     public ImageView getImg () { return img; }
 
+    public void setX(double x) { this.x = x; }
+    public void setY(double y) { this.y = y; }
+    public void setAxes(double x, double y) { this.x = x; this.y = y; }
+    public void setEating(boolean eating, Plant plant) {
+        this.eating = eating;
+        this.eatingPlant = plant;
+    }
+    public void setEating(boolean eating) { this.eating = eating; }
+    public void setEatingPlant(Plant plant) { this.eatingPlant = plant; }
+    public void setImg(ImageView img) { this.img = img; }
+    public void setDead() { HP = 0; }
+
     public void moveForward() {
-//        if (isDead() || reachedHouse()) {
-//            return;
-//        }
-        try {
-            this.x -= ZombieType.getMovingSpeed(type);
-        } catch (Exception e) {
-            System.out.println("zombie moveForward failed");
-            HP = 0;
+        if (!eating) {
+            x -= SPEED;
+            img.setX(x);
+            img.setTranslateX(x);
+        } else if (eatingPlant == null) {
+            eating = false;
+        } else {
+            eatingPlant.isBeingEaten(this);
         }
-        img.setX(x);
-        img.setTranslateX(x);
+    }
+
+    public void receiveHit(Hit hit) {
+        HP -= hit.getDamage();
     }
 
     @Override
@@ -75,17 +84,5 @@ public class Zombie extends Thread {
                 ", RELOADING=" + RELOADING +
                 ", DAMAGE=" + DAMAGE +
                 '}';
-    }
-
-    @Override
-    public void run() {
-//        Timeline t = new Timeline(new KeyFrame(Duration.millis(1), e -> {
-//            bullet.setX(bullet.getX() + hit.getSpeed());
-////            bullet.setY(bullet.getY() + 0.2);
-//            bullet.setTranslateX(bullet.getX());
-//            bullet.setTranslateY(bullet.getY());
-//        }));
-//        t.setDelay(Duration.seconds(3));
-//        t.setCycleCount(Animation.INDEFINITE);
     }
 }
