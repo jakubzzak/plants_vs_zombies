@@ -1,9 +1,11 @@
 package com.finalProject.level;
 
-import com.finalProject.exceptions.WrongPlantTypeException;
 import com.finalProject.exceptions.WrongZombieTypeException;
-import com.finalProject.game.Zombie;
 
+
+/**
+ * Represents all properties of certain types of zombies.
+ */
 public enum ZombieType {
     REGULAR,
     PIRATE,

@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 import static java.lang.Thread.sleep;
 
 
+/**
+ * Handles running of the game.
+ */
 public class Level {
     private final int ID;
     private GameController controller;
@@ -39,18 +42,18 @@ public class Level {
         loadLevel(filename);
     }
 
-    private void setCoverSrc(java.lang.String src) { coverSrc = src; }
-    private void setBgSrc(java.lang.String src) { bgSrc = src; }
+    private void setCoverSrc(String src) { coverSrc = src; }
+    private void setBgSrc(String src) { bgSrc = src; }
     private void setZombieCount(int count) { zombieCount = count; }
     private void setLawnMower(boolean isPresent) { lawnMower = isPresent; }
-    private void addPlant(java.lang.String type) throws WrongPlantTypeException { plantTypes.add(PlantType.getTypeImport(type)); }
-    private void addZombie(java.lang.String type) throws WrongZombieTypeException { zombieTypes.add(ZombieType.getTypeImport(type)); }
+    private void addPlant(String type) throws WrongPlantTypeException { plantTypes.add(PlantType.getTypeImport(type)); }
+    private void addZombie(String type) throws WrongZombieTypeException { zombieTypes.add(ZombieType.getTypeImport(type)); }
     public void setController(GameController controller) { this.controller = controller; }
 
     public int getID() { return ID; }
     public Image getCoverImg() { return new Image( "/pics/lvl_covers/" + coverSrc); }
     public Image getBgImg() { return new Image( "/pics/bg/" + coverSrc); }
-    public java.lang.String getBgImgSrc() { return "/pics/bg/" + bgSrc; }
+    public String getBgImgSrc() { return "/pics/bg/" + bgSrc; }
     public boolean hasLawnMower() { return lawnMower; }
     public List<Plant> getPlantTypes() { return plantTypes.stream().map(x -> {
         try {
@@ -66,10 +69,15 @@ public class Level {
     synchronized public void addPlant(Plant plant) { plants.add(plant); }
     synchronized public void addLawnMover(LawnMower lawnMower) { lawnMowers.add(lawnMower); }
 
-    private void loadLevel(java.lang.String filename) {
+    /**
+     * Loads chosen level from given file.
+     * @param filename
+     * Name of the file required to be loaded.
+     */
+    private void loadLevel(String filename) {
         try(Scanner sc = new Scanner(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8))) {
             while (sc.hasNextLine()) {
-                java.lang.String[] line = sc.nextLine().strip().split(":?\\s+");
+                String[] line = sc.nextLine().strip().split(":?\\s+");
                 if (line.length > 1 && !line[0].equals("//")) {
                     switch (line[0]) {
                         case "cover_src":
@@ -109,6 +117,9 @@ public class Level {
         }
     }
 
+    /**
+     * Kicks off all game threads for handling the game.
+     */
     public void run() {
         Random rnd = new Random();
 

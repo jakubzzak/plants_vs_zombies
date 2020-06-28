@@ -1,5 +1,9 @@
 package com.finalProject.game;
 
+
+/**
+ * Represents the types of powers of the certain plants.
+ */
 public enum PowerType {
     REGULAR_BULLET,
     DOUBLE_BULLET,

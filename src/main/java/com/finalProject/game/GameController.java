@@ -11,7 +11,6 @@ import com.finalProject.screenHandler.ScreensController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,6 +35,9 @@ import java.net.URL;
 import java.util.*;
 
 
+/**
+ * Controller for game screen.
+ */
 public class GameController extends Thread implements Initializable, ControlledScreen {
 
     ScreensController myController;
@@ -88,6 +90,9 @@ public class GameController extends Thread implements Initializable, ControlledS
     public GridPane getPlantLayer() { return plantLayer; }
     public Pane getHitLayer() { return hitLayer; }
 
+    /**
+     * Loads all abjects and view needed.
+     */
     private void loadLevel() {
         System.out.println("loading level: " + current.toString());
         gameArea.setStyle("-fx-background-image: url('" + current.getBgImgSrc() + "'); -fx-background-size: contain");
@@ -101,6 +106,11 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    /**
+     * Adds given zombie to the screen.
+     * @param zombie
+     * Zombie to be shown.
+     */
     public void releaseZombie(Zombie zombie) {
         ImageView zomb = new ImageView(new Image(zombie.getImageSrc(), zombie.getMaxPicSize(), zombie.getMaxPicSize(), true, true));
         zombie.setImg(zomb);
@@ -111,6 +121,12 @@ public class GameController extends Thread implements Initializable, ControlledS
         zombie.setAxes(zomb.getX(), zomb.getY());
         addObjectToZombieLayer(zomb);
     }
+
+    /**
+     * Adds given hit to the screen.
+     * @param hit
+     * Hit to be shown.
+     */
     public void releaseHit(Hit hit) {
         //TODO: calculate trajectory
         ImageView bullet = new ImageView(new Image(hit.getImageSrc(), hit.getMaxPicSize(), hit.getMaxPicSize(), true, true));
@@ -136,10 +152,13 @@ public class GameController extends Thread implements Initializable, ControlledS
         current.addHit(hit);
     }
 
+    /**
+     * Adds an object to the certain screen layer.
+     * @param pic
+     * Picture to be shown.
+     */
     public void addObjectToZombieLayer(ImageView pic) {
         try{
-//            CompletableFuture.supplyAsync(() -> zombieLayer.getChildren().add(pic), Platform::runLater).join();
-//            System.out.println("trying to add zombie");
             synchronized (zombieLayer) {
                 Platform.runLater(() -> zombieLayer.getChildren().add(pic));
             }
@@ -147,11 +166,15 @@ public class GameController extends Thread implements Initializable, ControlledS
             System.out.println("add at zombieLayer failed");
         }
     }
+
+    /**
+     * Removes an object from the certain screen layer.
+     * @param pic
+     * Picture to be removed.
+     */
     public void removeObjectFromZombieLayer(ImageView pic) {
         try{
-//            CompletableFuture.supplyAsync(() -> hitLayer.getChildren().remove(pic), Platform::runLater).join();
             synchronized (zombieLayer) {
-//                System.out.println("trying to remove zombie");
                 Platform.runLater(() -> zombieLayer.getChildren().remove(pic));
             }
         } catch (Exception e ) {
@@ -159,22 +182,29 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    /**
+     * Adds an object to the certain screen layer.
+     * @param pic
+     * Picture to be shown.
+     */
     public void addObjectToHitLayer(ImageView pic) {
         try{
-//            CompletableFuture.supplyAsync(() -> hitLayer.getChildren().add(pic), Platform::runLater).join();
             synchronized (hitLayer) {
-//                System.out.println("trying to add hit");
                 Platform.runLater(() -> hitLayer.getChildren().add(pic));
             }
         } catch (Exception e ) {
             System.out.println("add at hitLayer failed");
         }
     }
+
+    /**
+     * Removes an object from the certain screen layer.
+     * @param pic
+     * Picture to be removed.
+     */
     public void removeObjectFromHitLayer(ImageView pic) {
         try{
-//            CompletableFuture.supplyAsync(() -> hitLayer.getChildren().remove(pic), Platform::runLater).join();
             synchronized (hitLayer) {
-//                System.out.println("trying to remove hit");
                 Platform.runLater(() -> hitLayer.getChildren().remove(pic));
             }
         } catch (Exception e ) {
@@ -182,19 +212,28 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    /**
+     * Adds an object to the certain screen layer.
+     * @param pic
+     * Picture to be shown.
+     */
     public void addObjectToPlantLayer(ImageView pic) {
         try {
             synchronized (plantLayer) {
-//                System.out.println("trying to add plant");
                 Platform.runLater(() -> plantLayer.getChildren().add(pic));
             }
         } catch (Exception e ) {
             System.out.println("add at fieldLayer failed");
         }
     }
+
+    /**
+     * Removes an object from the certain screen layer.
+     * @param pic
+     * Picture to be removed.
+     */
     public void removeObjectFromPlantLayer(int cellId, ImageView pic) {
         try {
-//            CompletableFuture.supplyAsync(() -> plantLayer.getChildren().remove(pic), Platform::runLater).join();
             synchronized (plantLayer) {
                 HBox obj = cells.get(cellId);
                 if (obj != null) {
@@ -209,6 +248,11 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    /**
+     * Handles the end of the game.
+     * @param win
+     * Saying if the user won or lost the game.
+     */
     public void endOfGame(boolean win) {
         Text message = new Text();
         message.setX(220 - 110); //284, w: 482 // 241
@@ -245,6 +289,11 @@ public class GameController extends Thread implements Initializable, ControlledS
 
     }
 
+    /**
+     * Creates lower view of the game screen.
+     * @throws WrongWindowSizeException
+     * Thrown when given screen size not available.
+     */
     private void createGameArea() throws WrongWindowSizeException {
         plantLayer = new GridPane();
 //        plantLayer.setGridLinesVisible(true);
@@ -302,6 +351,9 @@ public class GameController extends Thread implements Initializable, ControlledS
         gameArea.getChildren().addAll(zombieLayer, plantLayer, hitLayer);
     }
 
+    /**
+     * Visualize lawn movers, if present.
+     */
     private void loadLawnMowers() {
         if (current.hasLawnMower()) {
             for (int row=0; row<5; row++) {
@@ -319,6 +371,9 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    /**
+     * Creates the upper view representing current amount of suns and available plants.
+     */
     private void loadCards() {
         toolbarArea.setStyle("-fx-background-color: chocolate; -fx-border-color: brown; -fx-border-width: 3; -fx-background-radius: 15; -fx-border-radius: 5;");
         walletArea.setStyle("-fx-background-radius: 15; -fx-border-width: 3; -fx-border-color: brown; -fx-border-radius: 5; -fx-background-color: lightblue;");
@@ -392,11 +447,19 @@ public class GameController extends Thread implements Initializable, ControlledS
         }
     }
 
+    /**
+     * Closes the whole application.
+     * @param event
+     * Needed to be presented for the method to be triggered from FXML file. No specific use.
+     */
     public void close(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     Initializes current controller.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         user = Main.getUser();
@@ -423,6 +486,9 @@ public class GameController extends Thread implements Initializable, ControlledS
         loadLevel();
     }
 
+    /**
+     Sets parent of the current screen.
+     */
     @Override
     public void setScreenParent(ScreensController screenPage) {
         myController = screenPage;

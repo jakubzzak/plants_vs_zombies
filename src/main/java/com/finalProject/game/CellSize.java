@@ -2,6 +2,10 @@ package com.finalProject.game;
 
 import com.finalProject.exceptions.WrongWindowSizeException;
 
+
+/**
+ * Represents the properties of different sizes of the screen.
+ */
 public enum CellSize {
     SMALL,
     MID,

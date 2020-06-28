@@ -6,6 +6,9 @@ import com.finalProject.level.ZombieType;
 import javafx.scene.image.ImageView;
 
 
+/**
+ * Represents a zombie as an object.
+ */
 public class Zombie {
     private int row, col;
     private ZombieType type;
@@ -57,6 +60,9 @@ public class Zombie {
     public void setImg(ImageView img) { this.img = img; }
     public void setDead() { HP = 0; }
 
+    /**
+     * Moves the zombie forward if no plant if present in its way.
+     */
     public void moveForward() {
         if (!eating) {
             x -= SPEED;
@@ -69,6 +75,11 @@ public class Zombie {
         }
     }
 
+    /**
+     * Decrease health point of the zombie by amount given by the presented hit.
+     * @param hit
+     * Represents the exact bullet that hit the zombie.
+     */
     public void receiveHit(Hit hit) {
         HP -= hit.getDamage();
     }

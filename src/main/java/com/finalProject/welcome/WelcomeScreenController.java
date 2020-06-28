@@ -16,6 +16,10 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
+/**
+ * Controller for welcome screen.
+ */
 public class WelcomeScreenController implements Initializable, ControlledScreen {
 
     ScreensController myController;
@@ -34,11 +38,17 @@ public class WelcomeScreenController implements Initializable, ControlledScreen 
     @FXML
     Button enterBtn;
 
-
+    /**
+     Checks if name input is valid.
+     */
     private boolean nameIsValid(String input) {
         return input.length() >= 3;
     }
 
+
+    /**
+     Triggers on enter pressed or button 'enter' down.
+     */
     public void enter(ActionEvent event) {
         if (!nameIsValid(username.getText())) { // parsing username
             username.selectAll();
@@ -52,6 +62,9 @@ public class WelcomeScreenController implements Initializable, ControlledScreen 
         Main.getScreenContainer().unloadScreen("welcome");
     }
 
+    /**
+     Initializes current controller.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         user = Main.getUser();
@@ -75,6 +88,9 @@ public class WelcomeScreenController implements Initializable, ControlledScreen 
         });
     }
 
+    /**
+     Sets parent of the current screen.
+     */
     @Override
     public void setScreenParent(ScreensController screenPage) {
         myController = screenPage;
