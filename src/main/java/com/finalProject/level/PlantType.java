@@ -8,6 +8,10 @@ import com.finalProject.game.bullets.Sun;
 
 import java.util.Random;
 
+
+/**
+ * Represents all properties of certain types of plants.
+ */
 public enum PlantType {
     CANNON,
     DOUBLE_CANNON,
@@ -92,8 +96,9 @@ public enum PlantType {
             case MINE:
                 return -1;
             case FLOWER:
+                return 10;
             case DOUBLE_FLOWER:
-                return 8;
+                return 12;
             case EATER:
                 return 12;
             case CACTUS:
@@ -117,9 +122,9 @@ public enum PlantType {
             case MINE:
                 return -1;
             case FLOWER:
-                return 25;
-            case DOUBLE_FLOWER:
                 return 50;
+            case DOUBLE_FLOWER:
+                return 100;
             case EATER:
                 return 10000;
             case CACTUS:

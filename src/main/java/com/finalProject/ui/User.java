@@ -3,14 +3,13 @@ package com.finalProject.ui;
 import com.finalProject.game.GameController;
 import com.finalProject.level.Level;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-
-public class User extends Thread {
+/**
+ Class for storing user data.
+ */
+public class User {
     private int UID;
     private String username;
     private GameController gameController;
@@ -47,16 +46,6 @@ public class User extends Thread {
             return true;
         }
         return false;
-    }
-
-    public void send(String msg) {}
-
-    public void startClient() throws IOException {
-        try{
-            System.out.println("");
-        } catch(Exception ex){
-            System.out.println("Exception -> " + ex.getMessage());
-        }
     }
 
 }

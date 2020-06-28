@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 
+/**
+ * Represents a plant as an object.
+ */
 public class Plant extends Thread implements Serializable {
     private final PlantType type;
     private final int cost;
@@ -32,6 +35,11 @@ public class Plant extends Thread implements Serializable {
     public String getImageSrc() { return "/pics/plants/" + type + ".png"; }
     public int getRow() { return row; }
     public int getCol() { return col; }
+
+    /**
+     * @return
+     * X position according to zombies.
+     */
     public double getX() {
         if (x == null) {
             try{
@@ -66,6 +74,11 @@ public class Plant extends Thread implements Serializable {
     public void setCellPos(int row, int col) { this.row = row; this.col = col; }
     public void setImg(ImageView img) { this.img = img; }
 
+    /**
+     * Handles process of eating zombie.
+     * @param zombie
+     * Zombie that is eating the plant.
+     */
     synchronized public void isBeingEaten(Zombie zombie) {
         if (HP <= 0) {
             zombie.setEating(false);
@@ -75,6 +88,9 @@ public class Plant extends Thread implements Serializable {
         }
     }
 
+    /**
+     * Fires its bullet if isFiring == true
+     */
     @Override
     public void run() {
         try { sleep(3000); } catch (Exception e) { System. out.println("sleeping interrupted -> " + e.getMessage()); }

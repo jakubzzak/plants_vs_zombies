@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+
+/**
+ Core of the application.
+ Stores all values needed to be accessed globally.
+ */
 public class Main extends Application {
     public static Stage ps; // window size -> global access
     public static Scene sc; // showing components -> global access
@@ -68,16 +73,11 @@ public class Main extends Application {
         INIT_HEIGHT = ps.getHeight();
         INIT_WIDTH = ps.getWidth();
         loadLevels();
-//        loadProps();
     }
 
-    private static void loadProps() {
-        props = new Properties(); // TODO: check it out
-        props.put("gameWindowSizeSmall", List.of(489, 360));
-        props.put("gameWindowSizeMedium", List.of(489, 360));
-        props.put("gameWindowSizeLarge", List.of(489, 360));
-    }
-
+    /**
+     Creates levels from all the files found by the function getAllFiles and stores them for global access.
+     */
     private static void loadLevels() {
         levels = new ArrayList<>();
 
@@ -107,6 +107,10 @@ public class Main extends Application {
     public void setHeight(double newSize) { INIT_HEIGHT = newSize; }
     public void setWidth(double newSize) { INIT_WIDTH = newSize; }
 
+    /**
+     Goes through all files in directory 'resources/levels'.
+     Returns an array of strings of all the present files suitable to be loaded as levels.
+     */
     private static List<String> getAllFiles(File current) {
         List<String> temp = new ArrayList<>();
         File[] directoryListing = current.listFiles();
@@ -118,7 +122,6 @@ public class Main extends Application {
         }
         return temp;
     }
-
 
     public static void main(String[] args) {
         launch(args);

@@ -1,16 +1,14 @@
 package com.finalProject.game;
 
-import com.finalProject.ui.Main;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 import java.util.List;
 
-public class LawnMower extends Thread {
+
+/**
+ * Represents a lawn mover as an object.
+ */
+public class LawnMower {
     private int row, col;
     private final double SPEED = 1;
     private GameController controller;
@@ -44,38 +42,12 @@ public class LawnMower extends Thread {
     public void setParent(List<LawnMower> parent) { this.parent = parent; }
     public void setRunning(boolean run) {  running = run; }
 
+    /**
+     * Moves the lawn mover forward.
+     */
     public void moveForward() {
         x += SPEED;
         img.setX(x);
         img.setTranslateX(x);
-    }
-
-    @Override
-    public void run() {
-        System.out.println("running lawnMover");
-//        running = true;
-//        while(x < 210) {
-//            x += SPEED;
-//            img.setX(x);
-//            img.setTranslateX(x);
-//            try { sleep(100); } catch (Exception e) { System.out.println("lawnMover handling thread interrupted"); }
-//        }
-//        parent.remove(this);
-//        controller.removeObjectFromZombieLayer(img);
-//        Timeline t = new Timeline(new KeyFrame(Duration.millis(50), e -> {
-//            x += SPEED;
-//            img.setX(x);
-//            img.setTranslateX(x);
-//        }));
-//        t.setCycleCount(50);
-//        t.setOnFinished(event -> {
-//            if (x < 210) {
-//                t.play();
-//            } else {
-//                parent.remove(this);
-//                controller.removeObjectFromZombieLayer(img);
-//            }
-//        });
-//        t.play();
     }
 }

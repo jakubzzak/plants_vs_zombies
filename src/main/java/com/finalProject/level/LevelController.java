@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 
+/**
+ * Controller for level screen.
+ */
 public class LevelController extends Thread implements Initializable, ControlledScreen {
 
     ScreensController myController;
@@ -51,6 +54,9 @@ public class LevelController extends Thread implements Initializable, Controlled
     @FXML
     private VBox screen;
 
+    /**
+     * Loads all levels that were successfully retrieved from files.
+     */
     private void fillContent() {
         content.setSpacing(20);
         for (Level lvl : levels) {
@@ -94,11 +100,19 @@ public class LevelController extends Thread implements Initializable, Controlled
         }
     }
 
+    /**
+     * Closes the whole application.
+     * @param event
+     * Needed to be presented for the method to be triggered from FXML file. No specific use.
+     */
     public void close(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     Initializes current controller.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         user = Main.getUser();
@@ -133,6 +147,9 @@ public class LevelController extends Thread implements Initializable, Controlled
 
     }
 
+    /**
+     Sets parent of the current screen.
+     */
     @Override
     public void setScreenParent(ScreensController screenPage) {
         myController = screenPage;
