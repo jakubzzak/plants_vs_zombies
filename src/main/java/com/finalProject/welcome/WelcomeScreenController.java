@@ -22,21 +22,40 @@ import java.util.ResourceBundle;
  */
 public class WelcomeScreenController implements Initializable, ControlledScreen {
 
+    /**
+     * Screen controller for handling screens.
+     */
     ScreensController myController;
+    /**
+     * User data.
+     */
     User user;
 
+    /**
+     * Main screen.
+     */
     @FXML
     private VBox screen;
+    /**
+     * Label for username.
+     */
     @FXML
-    Label usernameLabel;
+    private Label usernameLabel;
+    /**
+     * Username input.
+     */
     @FXML
-    TextField username;
-
+    private TextField username;
+    /**
+     * Message shown if input not satisfied.
+     */
     @FXML
-    Label errorMessage;
-
+    private Label errorMessage;
+    /**
+     * Button to enter the game.
+     */
     @FXML
-    Button enterBtn;
+    private Button enterBtn;
 
     /**
      Checks if name input is valid.
