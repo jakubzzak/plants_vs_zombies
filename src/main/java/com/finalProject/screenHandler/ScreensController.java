@@ -13,20 +13,39 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class ScreensController extends StackPane {
+    /**
+     * Map of all presented screens.
+     */
     private HashMap<String, Node> screens = new HashMap<>();
 
+    /**
+     *
+     */
     public ScreensController() {
         super();
     }
 
+    /**
+     * Adds new screen to the map of screens.
+     * @param name
+     * Name of the new screen.
+     * @param screen
+     * Node representing the screen.
+     */
     public void addScreen(String name, Node screen) {
         screens.put(name, screen);
     }
 
+    /**
+     * Gets the required screen.
+     * @param name
+     * Name of the required screen.
+     * @return
+     * Screen.
+     */
     public Node getScreen(String name) {
         return screens.get(name);
     }

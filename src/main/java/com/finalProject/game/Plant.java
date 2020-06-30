@@ -24,6 +24,13 @@ public class Plant extends Thread implements Serializable {
     private Hit hit;
     private boolean isFiring = false;
 
+    /**
+     * Creates the hit object.
+     * @param type
+     * Type of a plant.
+     * @param cost
+     * Cost of the plant in suns.
+     */
     public Plant(PlantType type, int cost) {
         this.type = type;
         this.cost = cost;
@@ -59,6 +66,9 @@ public class Plant extends Thread implements Serializable {
     public ImageView getImg() { return img; }
     public boolean isFiring() { return isFiring; }
 
+    /**
+     * Initializes the hit object.
+     */
     private void initialize() {
         try {
             this.hit = PlantType.getHit(this);

@@ -11,6 +11,15 @@ public enum CellSize {
     MID,
     LARGE;
 
+    /**
+     * Gets max character height according to the provided cell size.
+     * @param size
+     * Cell size.
+     * @return
+     * Number representing height of the image.
+     * @throws WrongWindowSizeException
+     * If the provided cell size is not presented.
+     */
     public static int getCharacterHeight(CellSize size) throws WrongWindowSizeException {
         switch (size) {
             case SMALL:
@@ -24,6 +33,15 @@ public enum CellSize {
         }
     }
 
+    /**
+     * Gets max character width according to the provided cell size.
+     * @param size
+     * Cell size.
+     * @return
+     * Number representing width of the image.
+     * @throws WrongWindowSizeException
+     * If the provided cell size is not presented.
+     */
     public static int getCharacterWidth(CellSize size) throws WrongWindowSizeException {
         switch (size) {
             case SMALL:

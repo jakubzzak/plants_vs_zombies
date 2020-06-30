@@ -1,6 +1,7 @@
 package com.finalProject.level;
 
 import com.finalProject.exceptions.WrongPlantTypeException;
+import com.finalProject.exceptions.WrongZombieTypeException;
 import com.finalProject.game.Plant;
 import com.finalProject.game.bullets.Hit;
 import com.finalProject.game.bullets.Regular;
@@ -32,6 +33,15 @@ public enum PlantType {
     MINE,
     ;
 
+    /**
+     * Gets the amount of suns required to plant the certain plant.
+     * @param type
+     * The type of the plant.
+     * @return
+     * Number of suns required to plant the certain plant.
+     * @throws WrongPlantTypeException
+     * If plant type not presented.
+     */
     public static int getCost(PlantType type) throws WrongPlantTypeException {
         switch (type) {
             case CANNON:
@@ -58,6 +68,15 @@ public enum PlantType {
         }
     }
 
+    /**
+     * Gets the HP of the certain plant.
+     * @param type
+     * The type of the plant.
+     * @return
+     * Number of suns required to plant the certain plant.
+     * @throws WrongPlantTypeException
+     * If plant type not presented.
+     */
     public static int getHP(PlantType type) throws WrongPlantTypeException {
         switch (type) {
             case CANNON:
@@ -82,6 +101,15 @@ public enum PlantType {
         }
     }
 
+    /**
+     * Gets the reloading time of the certain plant.
+     * @param type
+     * The type of the plant.
+     * @return
+     * Reloading time of the certain plant in seconds.
+     * @throws WrongPlantTypeException
+     * If plant type not presented.
+     */
     public static int getReloadTimeInSec(PlantType type) throws WrongPlantTypeException {
         switch (type) {
             case CANNON:
@@ -108,6 +136,15 @@ public enum PlantType {
         }
     }
 
+    /**
+     * Gets the damage of the certain plant.
+     * @param type
+     * The type of the plant.
+     * @return
+     * Damage of the certain plant per hit.
+     * @throws WrongPlantTypeException
+     * If plant type not presented.
+     */
     public static int getDamagePerHit(PlantType type) throws WrongPlantTypeException {
         switch (type) {
             case CANNON:
@@ -134,6 +171,15 @@ public enum PlantType {
         }
     }
 
+    /**
+     * Gets the instance of a hit of the certain plant.
+     * @param plant
+     * An instance of a plant.
+     * @return
+     * An instance of the hit of the certain plant.
+     * @throws WrongPlantTypeException
+     * If type of the plant does not exists.
+     */
     public static Hit getHit(Plant plant) throws WrongPlantTypeException {
         Random rnd = new Random();
         switch (plant.getType()) {
@@ -163,6 +209,15 @@ public enum PlantType {
         }
     }
 
+    /**
+     * Converts plant from string to PlantType.
+     * @param type
+     * Type of the plant.
+     * @return
+     * Plant type according to the input string.
+     * @throws WrongPlantTypeException
+     * If plant type not presented.
+     */
     public static PlantType getTypeImport(String type) throws WrongPlantTypeException {
         switch (type) {
             case "CANNON":
@@ -196,10 +251,24 @@ public enum PlantType {
         }
     }
 
+    /**
+     * Gets if the provided plant is a flower.
+     * @param plant
+     * An instance of the plant.
+     * @return
+     * If the provided plant is of type flower.
+     */
     public static boolean isFlower(Plant plant) {
         return plant.getType() == PlantType.FLOWER || plant.getType() == PlantType.DOUBLE_FLOWER;
     }
 
+    /**
+     * Gets if the provided plant is a barrier.
+     * @param plant
+     * An instance of the plant.
+     * @return
+     * If the provided plant is of type barrier.
+     */
     public static boolean isBarrier(Plant plant) {
         return plant.getType() == PlantType.BARRIER || plant.getType() == PlantType.BARRIER_APRON || plant.getType() == PlantType.BARRIER_NURSE || plant.getType() == PlantType.LARGE_BARRIER;
     }
