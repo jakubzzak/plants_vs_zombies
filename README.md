@@ -11,7 +11,7 @@
 - plants implemented: Regular, Flower, Double flower, Barrier, Barrier nurse, Large barrier, Barrier apron
 
 **run**
-- kick-start the app from HelpMain class
+- kick-start the app from HelpMain class and follow instruction in help menu
 - maven not working yet (not including txt files)
 
 **note for contributors**
