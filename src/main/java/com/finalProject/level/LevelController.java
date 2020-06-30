@@ -30,6 +30,9 @@ public class LevelController extends Thread implements Initializable, Controlled
 
     ScreensController myController;
     User user;
+    /**
+     * List of presented levels.
+     */
     List<Level> levels;
 
     @FXML

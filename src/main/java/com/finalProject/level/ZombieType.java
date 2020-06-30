@@ -33,6 +33,15 @@ public enum ZombieType {
     GIANT,
     ;
 
+    /**
+     * Gets HP of the required zombie type.
+     * @param type
+     * Type of the zombie.
+     * @return
+     * NUmber of HP of the zombie.
+     * @throws WrongZombieTypeException
+     * If zombie type not presented.
+     */
     public static int getHP(ZombieType type) throws WrongZombieTypeException {
         switch (type) {
             case REGULAR:
@@ -65,6 +74,15 @@ public enum ZombieType {
         }
     }
 
+    /**
+     * Gets speed of the required zombie type.
+     * @param type
+     * Type of the zombie.
+     * @return
+     * Distance traveled by the certain type of zombie per one iteration.
+     * @throws WrongZombieTypeException
+     * If zombie type not presented.
+     */
     public static double getMovingSpeed(ZombieType type) throws WrongZombieTypeException {
         switch (type) {
             case HIPPIE:
@@ -95,6 +113,15 @@ public enum ZombieType {
         }
     }
 
+    /**
+     * Gets damage of the required zombie type.
+     * @param type
+     * Type of the zombie.
+     * @return
+     * Damage caused by the certain type of zombie per one iteration.
+     * @throws WrongZombieTypeException
+     * If zombie type not presented.
+     */
     public static int getDamageAtOneHit(ZombieType type) throws WrongZombieTypeException {
         switch (type) {
             case REGULAR:
@@ -124,6 +151,15 @@ public enum ZombieType {
         }
     }
 
+    /**
+     * Converts zombie from string to ZombieType.
+     * @param type
+     * Type of the zombie.
+     * @return
+     * Zombie type according to the input string.
+     * @throws WrongZombieTypeException
+     * If zombie type not presented.
+     */
     public static ZombieType getTypeImport(String type) throws WrongZombieTypeException {
         switch (type) {
             case "REGULAR":
